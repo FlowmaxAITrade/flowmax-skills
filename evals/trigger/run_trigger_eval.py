@@ -11,10 +11,10 @@ Backend (API vs. ``claude -p``) is chosen by ``evals/_llm.py`` — see its docst
 Usage:
   # Local (Pro/Max subscription) — no API key needed:
   python evals/trigger/run_trigger_eval.py \\
-      --skill cc/skills/hubble_credits \\
-      --eval evals/trigger/hubble_credits.json \\
-      --variant cc \\
-      --out evals/results/trigger-cc-hubble_credits.json
+      --skill skills/flowmax_credits \\
+      --eval evals/trigger/flowmax_credits.json \\
+      --variant flowmax \\
+      --out evals/results/trigger-flowmax_credits.json
 
   # With API key (CI or direct):
   export ANTHROPIC_API_KEY=sk-ant-...
@@ -159,16 +159,16 @@ def metrics(results: list[CaseResult]) -> dict:
     }
 
 
-DEFAULT_MODEL = os.environ.get("HUBBLE_EVAL_MODEL", "claude-sonnet-4-6")
+DEFAULT_MODEL = os.environ.get("FLOWMAX_EVAL_MODEL", "claude-sonnet-5")
 
 
 def main(argv: list[str]) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--skill", required=True, help="Path to skill directory (with SKILL.md)")
     ap.add_argument("--eval", required=True, help="Path to trigger eval JSON")
-    ap.add_argument("--variant", default="", help="Label for this run (cc / openclaw / ...)")
+    ap.add_argument("--variant", default="", help="Label for this run (flowmax / ...)")
     ap.add_argument("--out", required=True, help="Output JSON path")
-    ap.add_argument("--workers", type=int, default=int(os.environ.get("HUBBLE_EVAL_WORKERS", "6")))
+    ap.add_argument("--workers", type=int, default=int(os.environ.get("FLOWMAX_EVAL_WORKERS", "6")))
     ap.add_argument("--model", default=DEFAULT_MODEL, help=f"Anthropic model id (default: {DEFAULT_MODEL})")
     ap.add_argument("--limit", type=int, default=0)
     args = ap.parse_args(argv)

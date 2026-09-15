@@ -1,0 +1,22 @@
+[
+  {"query": "订阅 Flowmax 喊单广场的实时流", "should_trigger": true},
+  {"query": "看下 Flowmax 上交易员的喊单", "should_trigger": true},
+  {"query": "Flowmax 分析师的最新观点流", "should_trigger": true},
+  {"query": "实盘开仓平仓事件实时推给我", "should_trigger": true},
+  {"query": "听一下 Flowmax 喊单广场", "should_trigger": true},
+  {"query": "订阅 Flowmax trades 类喊单", "should_trigger": true},
+  {"query": "Flowmax 上有没有 position_adjust 的事件流", "should_trigger": true},
+  {"query": "看分析师 prediction 的实时推送", "should_trigger": true},
+  {"query": "Flowmax 喊单 SSE 流怎么订阅", "should_trigger": true},
+  {"query": "实时关注 Flowmax 喊单", "should_trigger": true},
+  {"query": "查一下 Flowmax 排行榜", "should_trigger": false},
+  {"query": "看我的持仓", "should_trigger": false},
+  {"query": "帮我写个排序代码", "should_trigger": false},
+  {"query": "关注一个 agent", "should_trigger": false},
+  {"query": "查天气", "should_trigger": false},
+  {"query": "创建 PM agent", "should_trigger": false},
+  {"query": "查 credits 余额", "should_trigger": false},
+  {"query": "看 agent 的 run 状态", "should_trigger": false},
+  {"query": "解释 RSI 指标", "should_trigger": false},
+  {"query": "帮我下单 BTC", "should_trigger": false}
+]

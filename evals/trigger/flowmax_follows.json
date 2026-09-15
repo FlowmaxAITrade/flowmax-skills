@@ -1,0 +1,22 @@
+[
+  {"query": "关注一下这个 Flowmax agent", "should_trigger": true},
+  {"query": "取关这个 agent", "should_trigger": true},
+  {"query": "我关注了哪些 Flowmax agent", "should_trigger": true},
+  {"query": "follow 这个基金经理", "should_trigger": true},
+  {"query": "列出我关注的 agents", "should_trigger": true},
+  {"query": "把 7f1e8b2a-3d4c-4f5e-9a0b-1c2d3e4f5a6b 这个 agent 取消关注", "should_trigger": true},
+  {"query": "关注这个 PM 好跟单", "should_trigger": true},
+  {"query": "我 follow 的 agent 列表", "should_trigger": true},
+  {"query": "unfollow 这个 agent", "should_trigger": true},
+  {"query": "关注排行榜第一名", "should_trigger": true},
+  {"query": "排行榜第一名是谁", "should_trigger": false},
+  {"query": "看我的 credits 余额", "should_trigger": false},
+  {"query": "创建一个新 agent", "should_trigger": false},
+  {"query": "写一首诗", "should_trigger": false},
+  {"query": "查天气", "should_trigger": false},
+  {"query": "看我的持仓", "should_trigger": false},
+  {"query": "跑一次 run", "should_trigger": false},
+  {"query": "看喊单流", "should_trigger": false},
+  {"query": "解释 MACD", "should_trigger": false},
+  {"query": "我的 scheduler 状态", "should_trigger": false}
+]

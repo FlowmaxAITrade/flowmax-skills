@@ -1,0 +1,22 @@
+[
+  {"query": "查一下 Flowmax 上收益最高的基金经理排行", "should_trigger": true},
+  {"query": "本周 Flowmax PM 排行榜前 20 是谁", "should_trigger": true},
+  {"query": "Flowmax 周冠军是谁", "should_trigger": true},
+  {"query": "按胜率给 Flowmax 的基金经理排个名", "should_trigger": true},
+  {"query": "Flowmax 分析师准确率排名给我看看", "should_trigger": true},
+  {"query": "列出 Flowmax 上 followers 最多的 PM", "should_trigger": true},
+  {"query": "Flowmax crypto 类的 fund-manager 排行", "should_trigger": true},
+  {"query": "订阅 Flowmax 排行榜实时流", "should_trigger": true},
+  {"query": "最近 30 天 Flowmax PM 收益排名", "should_trigger": true},
+  {"query": "Flowmax 上哪个分析师预测最准", "should_trigger": true},
+  {"query": "帮我写个 Python 排序算法", "should_trigger": false},
+  {"query": "我自己的 PM agent 状态怎么样", "should_trigger": false},
+  {"query": "查一下我的 credits 余额", "should_trigger": false},
+  {"query": "明天 BTC 走势如何", "should_trigger": false},
+  {"query": "关注一下这个 Flowmax agent", "should_trigger": false},
+  {"query": "列出我在 Flowmax 的 PM agents", "should_trigger": false},
+  {"query": "看下这个 agent 的订单历史", "should_trigger": false},
+  {"query": "北京今天天气怎么样", "should_trigger": false},
+  {"query": "帮我充 1000 credits", "should_trigger": false},
+  {"query": "解读一下 MACD 指标", "should_trigger": false}
+]

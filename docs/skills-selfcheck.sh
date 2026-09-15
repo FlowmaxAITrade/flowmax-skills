@@ -1,25 +1,27 @@
 #!/usr/bin/env bash
-# hubble-skills 端到端自检脚本（只调用只读接口，绝不触发付费/写操作）
+# flowmax-skills 端到端自检脚本（只调用只读接口，绝不触发付费/写操作）
 #
 # 用法：
-#   export HUBBLE_API_BASE_URL="https://market-v2.bedev.hubble-rpc.xyz"
-#   export HUBBLE_API_KEY="hb_sk_...你的 key..."
+#   export FLOWMAX_API_BASE_URL="https://market.dev.gcp.hubble-rpc.xyz"
+#   export FLOWMAX_API_KEY="hb_sk_...你的 key..."
+#   # 可选：想自检 logs 接口时设置 PM_ID
+#   export PM_ID="<你的 pm_id>"
 #   bash docs/skills-selfcheck.sh
 #
-# 输出：每个接口一行 HTTP 状态 + 简短响应片段。完整响应存到 /tmp/hubble-selfcheck/*.json。
+# 输出：每个接口一行 HTTP 状态 + 简短响应片段。完整响应存到 /tmp/flowmax-selfcheck/*.json。
 
 set -u
 
-: "${HUBBLE_API_BASE_URL:?HUBBLE_API_BASE_URL is required}"
-: "${HUBBLE_API_KEY:?HUBBLE_API_KEY is required}"
+: "${FLOWMAX_API_BASE_URL:?FLOWMAX_API_BASE_URL is required}"
+: "${FLOWMAX_API_KEY:?FLOWMAX_API_KEY is required}"
 
-case "$HUBBLE_API_KEY" in
+case "$FLOWMAX_API_KEY" in
   hb_sk_*) ;;
-  *) echo "HUBBLE_API_KEY must start with hb_sk_"; exit 2 ;;
+  *) echo "FLOWMAX_API_KEY must start with hb_sk_"; exit 2 ;;
 esac
 
-BASE="${HUBBLE_API_BASE_URL%/}"
-OUT="/tmp/hubble-selfcheck"
+BASE="${FLOWMAX_API_BASE_URL%/}"
+OUT="/tmp/flowmax-selfcheck"
 mkdir -p "$OUT"
 
 pass=0
@@ -31,7 +33,7 @@ check() {
   local out_file="$OUT/$(echo "$name" | tr ' /' '__').json"
   local http
   http=$(curl -sS -o "$out_file" -w "%{http_code}" \
-    -H "Authorization: Bearer $HUBBLE_API_KEY" \
+    -H "Authorization: Bearer $FLOWMAX_API_KEY" \
     -H "Content-Type: application/json" \
     "$url" 2>/dev/null || echo "000")
   if [[ "$http" =~ ^2 ]]; then
@@ -46,27 +48,41 @@ check() {
 }
 
 echo
-echo "== hubble_credits =="
+echo "== flowmax_credits =="
 check "credits: balance"       "$BASE/api/v1/credits/balance"
 check "credits: transactions"  "$BASE/api/v1/credits/transactions?limit=5&offset=0"
 check "credits: deposits"      "$BASE/api/v1/credits/deposits?limit=5&offset=0"
 check "credits: packages"      "$BASE/api/v1/credits/packages"
 
 echo
-echo "== hubble_agents =="
+echo "== flowmax_agents =="
 check "agents: list PM"        "$BASE/api/v1/agents/pm?limit=5&offset=0"
 check "agents: list UR"        "$BASE/api/v1/agents/user-research?page=1&page_size=5"
 check "agents: data-sources"   "$BASE/api/v1/agents/user-research/data-sources"
 check "config: indicator-tpls" "$BASE/api/v1/config/indicator-templates"
 
 echo
-echo "== hubble_logs =="
-check "logs: pm logs"          "$BASE/api/v1/agent-logs/pm/logs?page=1&page_size=5"
-check "logs: research logs"    "$BASE/api/v1/agent-logs/research/logs?page=1&page_size=5"
-check "logs: orders"           "$BASE/api/v1/agent-logs/orders?page=1&page_size=5"
-check "logs: positions"        "$BASE/api/v1/agent-logs/positions?page=1&page_size=5"
-check "logs: order history"    "$BASE/api/v1/agent-logs/order/history?page=1&page_size=5"
-check "logs: pnl summary"      "$BASE/api/v1/agent-logs/pnl/summary?page=1&page_size=5&bucket=day"
+echo "== flowmax_leaderboard (公开) =="
+check "leaderboard: fund-manager" "$BASE/api/v1/leaderboard/fund-manager?page=1&page_size=5"
+
+echo
+echo "== flowmax_marketplace =="
+check "marketplace: pm-agents" "$BASE/api/v1/marketplace/pm-agents"
+
+echo
+echo "== flowmax_follows =="
+check "follows: list"          "$BASE/api/v1/follows"
+
+if [[ -n "${PM_ID:-}" ]]; then
+  echo
+  echo "== flowmax_logs (需 PM_ID) =="
+  check "logs: pnl summary"      "$BASE/api/v1/agent-logs/pnl/summary?pm_id=$PM_ID&page=1&page_size=5&bucket=day"
+  check "logs: pm positions"     "$BASE/api/v1/agent-logs/pm/$PM_ID/positions?page=1&page_size=5"
+else
+  echo
+  echo "== flowmax_logs =="
+  echo "  [skip] PM_ID 未设置，跳过 logs 接口（需 pm_id）。"
+fi
 
 echo
 echo "== summary =="

@@ -1,11 +1,11 @@
 ---
-name: hubble_agents
-description: Use when the user asks to list, view, create, update, delete, or deploy agents on Hubble Market — including PM agents (CRUD) and User Research agents (create/update/delete, run a new research agent, deploy job status, version history, rollback, data sources, indicator templates). NOTE "run / 跑 a research agent" in Hubble means creating or deploying one here, not the x402 pay-per-execution flow handled by hubble_runs.
+name: flowmax_agents
+description: Use when the user asks to list, view, create, update, delete, or deploy agents on Flowmax — including PM agents (CRUD, fork/switch), and User Research agents (create/update/delete, run a new research agent, deploy job status, version history, rollback, data sources, indicator templates). NOTE "run / 跑 a research agent" in Flowmax means creating or deploying one here, not the x402 pay-per-execution flow handled by flowmax_runs.
 ---
 
-# Hubble Agents Skill
+# Flowmax Agents Skill
 
-Version: v0.5.0
+Version: v1.0.0
 
 ## When to use
 
@@ -16,6 +16,7 @@ Use this skill when the user asks about:
 - Creating a PM agent
 - Updating a PM agent
 - Deleting an agent
+- Forking a public PM agent (preview / fork / switch exchange)
 - Creating / updating / deleting User Research Agents
 - Checking deploy job status for User Research Agents
 - Managing User Research Agent versions
@@ -24,19 +25,19 @@ Use this skill when the user asks about:
 
 Read from environment:
 
-- `HUBBLE_API_BASE_URL` — default: `https://market-v2.bedev.hubble-rpc.xyz`
-- `HUBBLE_API_KEY` — must start with `hb_sk_`
+- `FLOWMAX_API_BASE_URL` — default: `https://market.dev.gcp.hubble-rpc.xyz`
+- `FLOWMAX_API_KEY` — must start with `hb_sk_`
 
 ## Safety rules
 
-- **Never print `HUBBLE_API_KEY`**.
+- **Never print `FLOWMAX_API_KEY`**.
 - Validate `agent_id` format before use: `^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$`
 - For all write actions (`POST`/`PUT`/`PATCH`/`DELETE`), summarize the action and wait for explicit user confirmation.
 
 ## Setup
 
 ```bash
-BASE="${HUBBLE_API_BASE_URL%/}"
+BASE="${FLOWMAX_API_BASE_URL%/}"
 # Validate agent_id
 [[ ! "$AGENT_ID" =~ ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$ ]] && echo "Invalid agent_id" && exit 2
 ```
@@ -51,7 +52,7 @@ PM agents are trading agents managed by Cloudflare Worker. Primary agent type fo
 
 ```bash
 curl -sS --fail-with-body \
-  -H "Authorization: Bearer $HUBBLE_API_KEY" \
+  -H "Authorization: Bearer $FLOWMAX_API_KEY" \
   "$BASE/api/v1/agents/pm"
 ```
 
@@ -69,7 +70,7 @@ Optional: `description`, `symbols`, `risk_limit` (0-1), `interval_ms`, `auto_sta
 
 ```bash
 curl -sS --fail-with-body \
-  -H "Authorization: Bearer $HUBBLE_API_KEY" \
+  -H "Authorization: Bearer $FLOWMAX_API_KEY" \
   -H "Content-Type: application/json" \
   -X POST \
   "$BASE/api/v1/agents/pm" \
@@ -88,10 +89,50 @@ Updatable: `name`, `description`, `symbols`, `risk_limit`, `interval_ms`, `syste
 
 ```bash
 curl -sS --fail-with-body \
-  -H "Authorization: Bearer $HUBBLE_API_KEY" \
+  -H "Authorization: Bearer $FLOWMAX_API_KEY" \
   -H "Content-Type: application/json" \
   -X PUT \
   "$BASE/api/v1/agents/pm/$AGENT_ID" \
+  -d "$BODY"
+```
+
+---
+
+### Fork preview — read
+
+Preview a public PM agent before forking.
+
+```bash
+curl -sS --fail-with-body \
+  -H "Authorization: Bearer $FLOWMAX_API_KEY" \
+  "$BASE/api/v1/agents/pm/$AGENT_ID/fork-preview"
+```
+
+---
+
+### Fork a public PM agent — requires confirmation
+
+Copy a public PM agent into the current user's own agents.
+
+```bash
+curl -sS --fail-with-body \
+  -H "Authorization: Bearer $FLOWMAX_API_KEY" \
+  -H "Content-Type: application/json" \
+  -X POST \
+  "$BASE/api/v1/agents/pm/$AGENT_ID/fork" \
+  -d "$BODY"
+```
+
+---
+
+### Switch forked mock PM to xcoin — requires confirmation
+
+```bash
+curl -sS --fail-with-body \
+  -H "Authorization: Bearer $FLOWMAX_API_KEY" \
+  -H "Content-Type: application/json" \
+  -X POST \
+  "$BASE/api/v1/agents/pm/$AGENT_ID/switch" \
   -d "$BODY"
 ```
 
@@ -103,11 +144,21 @@ curl -sS --fail-with-body \
 
 ```bash
 curl -sS --fail-with-body \
-  -H "Authorization: Bearer $HUBBLE_API_KEY" \
+  -H "Authorization: Bearer $FLOWMAX_API_KEY" \
   "$BASE/api/v1/agents/$AGENT_ID"
 ```
 
 Note: public agents do not require authentication; unpublished agents require ownership.
+
+---
+
+### Get agent bridge info
+
+```bash
+curl -sS --fail-with-body \
+  -H "Authorization: Bearer $FLOWMAX_API_KEY" \
+  "$BASE/api/v1/agents/$AGENT_ID/bridge-info"
+```
 
 ---
 
@@ -116,7 +167,7 @@ Note: public agents do not require authentication; unpublished agents require ow
 ```bash
 # Full update
 curl -sS --fail-with-body \
-  -H "Authorization: Bearer $HUBBLE_API_KEY" \
+  -H "Authorization: Bearer $FLOWMAX_API_KEY" \
   -H "Content-Type: application/json" \
   -X PUT \
   "$BASE/api/v1/agents/$AGENT_ID" \
@@ -124,7 +175,7 @@ curl -sS --fail-with-body \
 
 # Partial update
 curl -sS --fail-with-body \
-  -H "Authorization: Bearer $HUBBLE_API_KEY" \
+  -H "Authorization: Bearer $FLOWMAX_API_KEY" \
   -H "Content-Type: application/json" \
   -X PATCH \
   "$BASE/api/v1/agents/$AGENT_ID" \
@@ -137,7 +188,7 @@ curl -sS --fail-with-body \
 
 ```bash
 curl -sS --fail-with-body \
-  -H "Authorization: Bearer $HUBBLE_API_KEY" \
+  -H "Authorization: Bearer $FLOWMAX_API_KEY" \
   -X DELETE \
   "$BASE/api/v1/agents/$AGENT_ID"
 ```
@@ -171,15 +222,15 @@ API 前缀：`/api/v1/agents/user-research`。
 | 参数 | 必填 | 类型 | 说明 | 示例 |
 |---|---|---|---|---|
 | `name` | ✅ | string | Agent 的显示名称，最长 160 字符 | `"BTC 技术分析 Agent"` |
-| `prompt` | ✅ | string | 核心分析指令，描述 Agent 要分析什么、关注哪些指标、输出什么结论。写得越具体，分析质量越高 | `"分析 BTC 的 RSI、MACD 和布林带，判断当前趋势方向，给出做多/做空建议及主要理由"` |
-| `asset_type` | ✅ | string | 分析的资产类别 | `"Crypto"`（加密货币）/ `"A-shares"`（A股）/ `"HK stocks"`（港股）/ `"US stocks"`（美股） |
-| `analysis_type` | ✅ | string | 分析类型，影响 Agent 的分析框架 | `"Technical Analysis"`（技术分析）/ `"Fundamental Research"`（基本面）/ `"Capital Flow Analysis"`（资金流向）/ `"Macro Analysis"`（宏观） |
-| `datasource_ids` | ✅ | string[] | 选用的数据源 ID 列表（12 位 hex 字符串）。先调 `GET /api/v1/agents/user-research/data-sources` 查看平台支持的数据源 | `["a1b2c3d4e5f6", "0a1b2c3d4e5f"]` |
+| `prompt` | ✅ | string | 核心分析指令 | `"分析 BTC 的 RSI、MACD 和布林带，判断当前趋势方向，给出做多/做空建议及主要理由"` |
+| `asset_type` | ✅ | string | 分析的资产类别 | `"Crypto"` / `"A-shares"` / `"HK stocks"` / `"US stocks"` |
+| `analysis_type` | ✅ | string | 分析类型 | `"Technical Analysis"` / `"Fundamental Research"` / `"Capital Flow Analysis"` / `"Macro Analysis"` |
+| `datasource_ids` | ✅ | string[] | 数据源 ID 列表（12 位 hex）。先调 `GET /api/v1/agents/user-research/data-sources` | `["a1b2c3d4e5f6"]` |
 | `llm_provider_id` | ✅ | string | LLM 供应商，见上方表格 | `"gemini_vertex"` |
-| `llm_model` | ✅ | string | LLM 模型，必须与 `llm_provider_id` 配对 | `"gemini-3-flash-preview"` |
-| `description` | ❌ | string | Agent 的简短说明，展示给用户看 | `"每小时分析一次 BTC 技术面"` |
+| `llm_model` | ✅ | string | LLM 模型，须与 `llm_provider_id` 配对 | `"gemini-3-flash-preview"` |
+| `description` | ❌ | string | 简短说明 | `"每小时分析一次 BTC 技术面"` |
 | `is_public` | ❌ | boolean | 是否公开到市场，默认 `false` | `false` |
-| `datasource_config_version` | ❌ | string | 数据源配置版本，留空则使用最新版 | `"v1"` |
+| `datasource_config_version` | ❌ | string | 数据源配置版本，留空用最新版 | `"v1"` |
 
 #### 自适应创建流程
 
@@ -194,26 +245,24 @@ API 前缀：`/api/v1/agents/user-research`。
 **引导模式提问顺序（每次只问一个）**：
 
 1. 这个 Research Agent 叫什么名字？
-2. 描述它要做什么分析——这将成为 Agent 的核心指令（prompt）。写得越具体越好，比如关注哪些指标、输出什么结论。
-3. 分析哪类资产？`Crypto`（加密货币）/ `A-shares`（A股）/ `HK stocks`（港股）/ `US stocks`（美股）/ 其他（请说明，值需与 Creator 配置一致）
-4. 分析类型是？`Technical Analysis`（技术分析）/ `Fundamental Research`（基本面研究）/ `Capital Flow Analysis`（资金流向）/ `Macro Analysis`（宏观分析）/ 其他（请说明，值需与 Creator 配置一致）
+2. 描述它要做什么分析——这将成为 Agent 的核心指令（prompt）。
+3. 分析哪类资产？`Crypto` / `A-shares` / `HK stocks` / `US stocks` / 其他（值需与 Creator 配置一致）
+4. 分析类型是？`Technical Analysis` / `Fundamental Research` / `Capital Flow Analysis` / `Macro Analysis` / 其他
 5. 先调 `GET /api/v1/agents/user-research/data-sources` 列出可用数据源，展示给用户选择
-6. 使用哪个 LLM？`gemini_vertex`（gemini-3-flash-preview，通用）/ `minimax`（MiniMax-M2.7，中文场景）
-7. 是否公开到市场？（可选，默认 `false`，直接回车跳过）
+6. 使用哪个 LLM？`gemini_vertex`（gemini-3-flash-preview）/ `minimax`（MiniMax-M2.7）
+7. 是否公开到市场？（可选，默认 `false`）
 
 收集完毕后，展示完整 JSON body，等用户确认后再执行。
 
 **模板创建路径（5 步）**：
 
-1. 调用 `GET /api/v1/config/indicator-templates`，按 `asset_type` 分组展示模板列表（序号、名称、分析类型），等用户输入序号选择。
+1. 调用 `GET /api/v1/config/indicator-templates`，按 `asset_type` 分组展示模板列表，等用户输入序号选择。
 2. 询问：这个 Agent 叫什么名字？
-3. 询问：使用哪个 LLM？`gemini_vertex`（gemini-3-flash-preview，通用）/ `minimax`（MiniMax-M2.7，中文场景）
+3. 询问：使用哪个 LLM？`gemini_vertex` / `minimax`
 4. 展示模板 prompt 前两行预览，询问："要直接使用模板指令，还是在模板基础上补充说明？"
-   - 直接使用 → prompt 不变
-   - 补充说明 → 将用户输入追加到模板 prompt 末尾（不覆盖原始指令）
 5. 展示完整 JSON body，等用户确认后执行创建请求。
 
-从模板提取的字段：`datasource_ids` ← `selected_indicator_ids`，`prompt`、`asset_type`（如 `"Crypto"`）、`analysis_type`（如 `"Technical Analysis"`）直接使用，无需转换格式。
+从模板提取的字段：`datasource_ids` ← `selected_indicator_ids`，`prompt`、`asset_type`、`analysis_type` 直接使用，无需转换格式。
 
 #### 完整示例请求体
 
@@ -233,7 +282,7 @@ API 前缀：`/api/v1/agents/user-research`。
 
 ```bash
 curl -sS --fail-with-body \
-  -H "Authorization: Bearer $HUBBLE_API_KEY" \
+  -H "Authorization: Bearer $FLOWMAX_API_KEY" \
   -H "Content-Type: application/json" \
   -X POST \
   "$BASE/api/v1/agents/user-research" \
@@ -256,7 +305,7 @@ curl -sS --fail-with-body \
 
 ```bash
 curl -sS --fail-with-body \
-  -H "Authorization: Bearer $HUBBLE_API_KEY" \
+  -H "Authorization: Bearer $FLOWMAX_API_KEY" \
   "$BASE/api/v1/agents/user-research/jobs/$JOB_ID"
 ```
 
@@ -273,7 +322,7 @@ curl -sS --fail-with-body \
 
 ```bash
 curl -sS \
-  -H "Authorization: Bearer $HUBBLE_API_KEY" \
+  -H "Authorization: Bearer $FLOWMAX_API_KEY" \
   "$BASE/api/v1/agents/user-research/jobs/$JOB_ID/logs"
 ```
 
@@ -281,11 +330,9 @@ curl -sS \
 
 ### 查询可用数据源
 
-创建 Agent 前调用，列出平台支持的所有数据源，供用户选择 `datasource_ids`。
-
 ```bash
 curl -sS --fail-with-body \
-  -H "Authorization: Bearer $HUBBLE_API_KEY" \
+  -H "Authorization: Bearer $FLOWMAX_API_KEY" \
   "$BASE/api/v1/agents/user-research/data-sources"
 ```
 
@@ -295,22 +342,12 @@ curl -sS --fail-with-body \
 
 ### 查询 Indicator 模板
 
-获取预设分析模板，每条模板已内置 `selected_indicator_ids`（对应创建请求的 `datasource_ids`）和专业 `prompt`，可直接用于创建 User Research Agent。
-
 ```bash
 curl -sS --fail-with-body \
   "$BASE/api/v1/config/indicator-templates"
 ```
 
-无需认证。每条模板字段：
-
-| 字段 | 说明 |
-|---|---|
-| `name` | 模板显示名称 |
-| `asset_type` | 资产类型（如 `"Crypto"`、`"A-shares"`、`"HK stocks"`、`"US stocks"`） |
-| `analysis_type` | 分析类型（如 `"Technical Analysis"`、`"Fundamental Research"`） |
-| `selected_indicator_ids` | 12 位 hex ID 列表，直接用作 `datasource_ids` |
-| `prompt` | 完整分析指令，可直接使用 |
+无需认证。每条模板字段：`name`、`asset_type`、`analysis_type`、`selected_indicator_ids`（直接用作 `datasource_ids`）、`prompt`。
 
 ---
 
@@ -318,7 +355,7 @@ curl -sS --fail-with-body \
 
 ```bash
 curl -sS --fail-with-body \
-  -H "Authorization: Bearer $HUBBLE_API_KEY" \
+  -H "Authorization: Bearer $FLOWMAX_API_KEY" \
   "$BASE/api/v1/agents/user-research?page=1&page_size=20"
 ```
 
@@ -335,7 +372,7 @@ curl -sS --fail-with-body \
 
 ```bash
 curl -sS --fail-with-body \
-  -H "Authorization: Bearer $HUBBLE_API_KEY" \
+  -H "Authorization: Bearer $FLOWMAX_API_KEY" \
   "$BASE/api/v1/agents/user-research/$AGENT_ID"
 ```
 
@@ -363,7 +400,7 @@ curl -sS --fail-with-body \
 
 ```bash
 curl -sS --fail-with-body \
-  -H "Authorization: Bearer $HUBBLE_API_KEY" \
+  -H "Authorization: Bearer $FLOWMAX_API_KEY" \
   -H "Content-Type: application/json" \
   -X PUT \
   "$BASE/api/v1/agents/user-research/$AGENT_ID" \
@@ -376,7 +413,7 @@ curl -sS --fail-with-body \
 
 ```bash
 curl -sS --fail-with-body \
-  -H "Authorization: Bearer $HUBBLE_API_KEY" \
+  -H "Authorization: Bearer $FLOWMAX_API_KEY" \
   -X DELETE \
   "$BASE/api/v1/agents/user-research/$AGENT_ID"
 ```
@@ -389,7 +426,7 @@ curl -sS --fail-with-body \
 
 ```bash
 curl -sS --fail-with-body \
-  -H "Authorization: Bearer $HUBBLE_API_KEY" \
+  -H "Authorization: Bearer $FLOWMAX_API_KEY" \
   "$BASE/api/v1/agents/user-research/$AGENT_ID/versions?page=1&page_size=20"
 ```
 
@@ -397,7 +434,7 @@ curl -sS --fail-with-body \
 
 ```bash
 curl -sS --fail-with-body \
-  -H "Authorization: Bearer $HUBBLE_API_KEY" \
+  -H "Authorization: Bearer $FLOWMAX_API_KEY" \
   "$BASE/api/v1/agents/user-research/$AGENT_ID/versions/$VERSION"
 ```
 
@@ -414,7 +451,7 @@ curl -sS --fail-with-body \
 
 ```bash
 curl -sS --fail-with-body \
-  -H "Authorization: Bearer $HUBBLE_API_KEY" \
+  -H "Authorization: Bearer $FLOWMAX_API_KEY" \
   -H "Content-Type: application/json" \
   -X POST \
   "$BASE/api/v1/agents/user-research/$AGENT_ID/versions" \
@@ -429,12 +466,12 @@ curl -sS --fail-with-body \
 
 ```bash
 curl -sS --fail-with-body \
-  -H "Authorization: Bearer $HUBBLE_API_KEY" \
+  -H "Authorization: Bearer $FLOWMAX_API_KEY" \
   -X POST \
   "$BASE/api/v1/agents/user-research/$AGENT_ID/versions/$VERSION/rollback"
 ```
 
-返回 `400` 表示目标版本未曾成功部署，无法回滚。返回新 `job_id`，需轮询部署状态。
+返回 `400` 表示目标版本未曾成功部署。返回新 `job_id`，需轮询部署状态。
 
 ---
 
@@ -446,7 +483,7 @@ curl -sS --fail-with-body \
 | `403` | Not owner or no permission. |
 | `404` | Agent not found. Verify `agent_id`. |
 | `409` | Symbol conflict for PM agents. Report conflicting agents/symbols. |
-| `502` | (User Research) Creator auth failure (`X-Hubble-Auth-Key` wrong) or Creator returned 5xx/connection error. |
+| `502` | (User Research) Creator auth failure or Creator returned 5xx/connection error. |
 | `503` | (User Research) `RESEARCH_CREATOR_BASE_URL` not configured on server. |
 | `504` | (User Research) Creator request timed out (default 30s). |
 | `5xx` | Server error. Retry once; if still failing, report body. |

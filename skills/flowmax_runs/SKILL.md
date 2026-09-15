@@ -1,11 +1,11 @@
 ---
-name: hubble_runs
-description: Use when the user asks to invoke an already-existing Hubble agent via the x402 pay-per-execution flow — creating a run, polling or checking a specific run_id's status, or listing recent runs for an agent_id. NOT for creating, deploying, or managing an agent itself; "跑/部署 a new agent" goes to hubble_agents.
+name: flowmax_runs
+description: Use when the user asks to invoke an already-existing Flowmax agent via the x402 pay-per-execution flow — creating a run, polling or checking a specific run_id's status, listing recent runs for an agent_id, or listing the current user's runs. NOT for creating, deploying, or managing an agent itself; "跑/部署 a new agent" goes to flowmax_agents.
 ---
 
-# Hubble Runs Skill
+# Flowmax Runs Skill
 
-Version: v0.2.1
+Version: v1.0.0
 
 ## When to use
 
@@ -13,25 +13,25 @@ Use this skill when the user asks about:
 
 - Running an agent
 - Checking run status or polling progress
-- Listing recent runs
+- Listing recent runs (for an agent, or for the current user)
 
 ## Requirements
 
 Read from environment:
 
-- `HUBBLE_API_BASE_URL` — default: `https://market-v2.bedev.hubble-rpc.xyz`
-- `HUBBLE_API_KEY` — must start with `hb_sk_`
+- `FLOWMAX_API_BASE_URL` — default: `https://market.dev.gcp.hubble-rpc.xyz`
+- `FLOWMAX_API_KEY` — must start with `hb_sk_`
 
 ## Safety rules
 
-- **Never print `HUBBLE_API_KEY`**.
+- **Never print `FLOWMAX_API_KEY`**.
 - Validate `agent_id` / `run_id` before use (UUID format).
 - For `POST /runs`, summarize the action and wait for explicit user confirmation.
 
 ## Setup
 
 ```bash
-BASE="${HUBBLE_API_BASE_URL%/}"
+BASE="${FLOWMAX_API_BASE_URL%/}"
 [[ ! "$AGENT_ID" =~ ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$ ]] && echo "Invalid agent_id" && exit 2
 ```
 
@@ -69,7 +69,7 @@ Ask for required input fields, summarize, then confirm before calling:
 
 ```bash
 curl -sS --fail-with-body \
-  -H "Authorization: Bearer $HUBBLE_API_KEY" \
+  -H "Authorization: Bearer $FLOWMAX_API_KEY" \
   -H "Content-Type: application/json" \
   -X POST \
   "$BASE/api/v1/agents/$AGENT_ID/runs" \
@@ -82,18 +82,28 @@ curl -sS --fail-with-body \
 
 ```bash
 curl -sS --fail-with-body \
-  -H "Authorization: Bearer $HUBBLE_API_KEY" \
+  -H "Authorization: Bearer $FLOWMAX_API_KEY" \
   "$BASE/api/v1/agents/$AGENT_ID/runs/$RUN_ID"
 ```
 
 ---
 
-### List runs
+### List runs (for an agent)
 
 ```bash
 curl -sS --fail-with-body \
-  -H "Authorization: Bearer $HUBBLE_API_KEY" \
+  -H "Authorization: Bearer $FLOWMAX_API_KEY" \
   "$BASE/api/v1/agents/$AGENT_ID/runs?limit=10&offset=0"
 ```
 
 Query params: `limit` (default 10), `offset` (default 0).
+
+---
+
+### List my runs
+
+```bash
+curl -sS --fail-with-body \
+  -H "Authorization: Bearer $FLOWMAX_API_KEY" \
+  "$BASE/api/v1/me/runs"
+```

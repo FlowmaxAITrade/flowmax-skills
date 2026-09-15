@@ -2,7 +2,7 @@
 
 **日期**: 2026-04-22  
 **版本**: v1.0  
-**目标**: 为 `hubble_agents` skill 的 User Research Agent 创建流程增加模板支持，让用户无需手动选择 indicator，直接从预设模板快速创建。
+**目标**: 为 `flowmax_agents` skill 的 User Research Agent 创建流程增加模板支持，让用户无需手动选择 indicator，直接从预设模板快速创建。
 
 ---
 
@@ -24,7 +24,7 @@ Market Server 已提供两个相关端点：
 
 - 新增模板创建路径，用户最少只需回答 3 个问题（选模板、填名字、选 LLM）即可完成创建
 - 现有手动配置流程**完全不变**
-- Skills 包版本升至 `v0.5.0`，`hubble_agents` skill 内部版本升至 `v0.4.0`
+- Skills 包版本升至 `v0.5.0`，`flowmax_agents` skill 内部版本升至 `v0.4.0`
 
 ---
 
@@ -132,12 +132,12 @@ POST /api/v1/agents/user-research
 | `VERSION` | `v0.4.0` → `v0.5.0` |
 | `CC.md` | 版本号 `v0.4.0` → `v0.5.0` |
 | `README.md` | 版本号 `v0.4.0` → `v0.5.0` |
-| `cc/skills/hubble_agents/SKILL.md` | 内部版本 `v0.3.1` → `v0.5.0`，新增模板功能 |
+| `skills/flowmax_agents/SKILL.md` | 内部版本 `v0.3.1` → `v0.5.0`，新增模板功能 |
 
 ---
 
 ## 7. 不涉及的变更
 
 - `GET /api/v1/research/config`（Creator datasource 代理）：模板流程不调用，skill 文档无需修改
-- 所有其他 skill 文件（hubble_credits、hubble_runs 等）：不变
+- 所有其他 skill 文件（flowmax_credits、flowmax_runs 等）：不变
 - User Research Agent 的更新、删除、版本管理流程：不变

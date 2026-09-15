@@ -1,20 +1,20 @@
 > **⚠️ 2026-04-23 更新 / 结论修正**
 >
-> 本报告 §2.2 把 "openclaw 缺 hubble_auth" 列为 P0 回退、§5 行动建议 #2 要求 port `cc/skills/hubble_auth` → `openclaw/skills/`。**这两项结论已被推翻，不再执行**。
+> 本报告 §2.2 把 "openclaw 缺 flowmax_auth" 列为 P0 回退、§5 行动建议 #2 要求 port `skills/flowmax_auth` → `openclaw/skills/`。**这两项结论已被推翻，不再执行**。
 >
-> 正确结论：skill 用 `HUBBLE_API_KEY` (`hb_sk_...`) 做鉴权，auth / 登录流程（邮箱 OTP、钱包签名、access token）属于用户拿到 API key 之前的 onboarding，不应进入任何 skill。`cc/skills/hubble_auth/` 已于 2026-04-23 移除（tombstone 保留在原目录等待 `rm -rf`），openclaw 侧不补齐。
+> 正确结论：skill 用 `FLOWMAX_API_KEY` (`hb_sk_...`) 做鉴权，auth / 登录流程（邮箱 OTP、钱包签名、access token）属于用户拿到 API key 之前的 onboarding，不应进入任何 skill。`skills/flowmax_auth/` 已于 2026-04-23 移除（tombstone 保留在原目录等待 `rm -rf`），openclaw 侧不补齐。
 >
 > 完整原理 + 禁止清单见 `docs/skill-design-principles.md` → 原则 1。
 >
-> 本报告其余结论（credits packages 回退、description 风格对齐、`hubble_agents` 未提 deploy job/versions/rollback、`amb_3` 跑 research agent 优先 hit hubble_runs）仍然有效。
+> 本报告其余结论（credits packages 回退、description 风格对齐、`flowmax_agents` 未提 deploy job/versions/rollback、`amb_3` 跑 research agent 优先 hit flowmax_runs）仍然有效。
 >
 > ---
 
-# hubble-skills 测试报告
+# flowmax-skills 测试报告
 
 - 日期：2026-04-22
 - 版本：README.md 声明 `v0.5.0`，OPENCLAW.md 声明 `v0.3.0`
-- 测试范围：`cc/skills/` 全部 6 个 + `openclaw/skills/` 全部 5 个
+- 测试范围：`skills/` 全部 6 个 + `openclaw/skills/` 全部 5 个
 - 测试项：(1) SKILL.md 静态审查；(2) description 触发 eval；(3) 端到端真实 API 调用
 - 结论：cc 组整体可用、风险可控；openclaw 组存在**功能回退**和**顶层文档版本漂移**需要修
 
@@ -24,17 +24,17 @@
 
 | # | 位置 | Skill | 版本 | description 首句 |
 |---|---|---|---|---|
-| 1 | cc/skills | hubble_auth | v0.4.0 | Use when the user asks about logging into Hubble Market, obtaining an access token... |
-| 2 | cc/skills | hubble_credits | v0.4.0 | Use when the user asks about Hubble credits balance, transaction history, deposit records, recharge packages... |
-| 3 | cc/skills | hubble_agents | v0.5.0 | Use when the user asks to list, view, create, update, or delete agents (PM / User Research / generic)... |
-| 4 | cc/skills | hubble_pm_agent | v0.2.1 | Use when the user asks about PM-Agent status, starting/stopping scheduler, trigger, reconcile, emergency close... |
-| 5 | cc/skills | hubble_runs | v0.2.1 | Use when the user asks to run an agent, check a run's status, or list recent runs... |
-| 6 | cc/skills | hubble_logs | v0.2.1 | Use when the user asks about PM agent logs, research logs, orders, positions, order history, position recovery, PnL... |
-| 7 | openclaw/skills | hubble_credits | v0.2.0 | Query credits balance, transactions, deposits, and create recharge orders... |
-| 8 | openclaw/skills | hubble_agents | v0.5.0 | Manage agents (PM agents, User Research agents, and generic agents)... |
-| 9 | openclaw/skills | hubble_pm_agent | v0.2.0 | Query and control PM-Agent status from Hubble Market Server... (read/write) |
-| 10 | openclaw/skills | hubble_runs | v0.2.0 | Create and query agent runs... with x402 payment flow support |
-| 11 | openclaw/skills | hubble_logs | v0.2.0 | Query agent logs, orders, positions, and PnL via /api/v1/agent-logs endpoints... |
+| 1 | cc/skills | flowmax_auth | v0.4.0 | Use when the user asks about logging into Flowmax Market, obtaining an access token... |
+| 2 | cc/skills | flowmax_credits | v0.4.0 | Use when the user asks about Flowmax credits balance, transaction history, deposit records, recharge packages... |
+| 3 | cc/skills | flowmax_agents | v0.5.0 | Use when the user asks to list, view, create, update, or delete agents (PM / User Research / generic)... |
+| 4 | cc/skills | flowmax_pm_agent | v0.2.1 | Use when the user asks about PM-Agent status, starting/stopping scheduler, trigger, reconcile, emergency close... |
+| 5 | cc/skills | flowmax_runs | v0.2.1 | Use when the user asks to run an agent, check a run's status, or list recent runs... |
+| 6 | cc/skills | flowmax_logs | v0.2.1 | Use when the user asks about PM agent logs, research logs, orders, positions, order history, position recovery, PnL... |
+| 7 | openclaw/skills | flowmax_credits | v0.2.0 | Query credits balance, transactions, deposits, and create recharge orders... |
+| 8 | openclaw/skills | flowmax_agents | v0.5.0 | Manage agents (PM agents, User Research agents, and generic agents)... |
+| 9 | openclaw/skills | flowmax_pm_agent | v0.2.0 | Query and control PM-Agent status from Flowmax Market Server... (read/write) |
+| 10 | openclaw/skills | flowmax_runs | v0.2.0 | Create and query agent runs... with x402 payment flow support |
+| 11 | openclaw/skills | flowmax_logs | v0.2.0 | Query agent logs, orders, positions, and PnL via /api/v1/agent-logs endpoints... |
 
 ---
 
@@ -43,24 +43,24 @@
 ### 2.1 健康项（两组共有的优点）
 
 - 所有 skill 都在 frontmatter 里写清楚了 `name` 和 `description`，没有格式错误。
-- "Safety rules" 都明确了**不打印 `HUBBLE_API_KEY`**、**写操作需要二次确认**，这是关键的。
+- "Safety rules" 都明确了**不打印 `FLOWMAX_API_KEY`**、**写操作需要二次确认**，这是关键的。
 - 涉及 ID 参数的 skill（agents / pm_agent / runs）都给出了 UUID 正则验证规则：`^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$`。
-- `hubble_logs` 两组都强调"设置 `page_size` 防止响应过大"，这是很好的 guardrail。
-- `hubble_runs` 正确描述了 x402 两步付费流程，并明确"不自动完成付费"，安全边界合理。
+- `flowmax_logs` 两组都强调"设置 `page_size` 防止响应过大"，这是很好的 guardrail。
+- `flowmax_runs` 正确描述了 x402 两步付费流程，并明确"不自动完成付费"，安全边界合理。
 
 ### 2.2 问题清单（按严重度排序）
 
-#### 🔴 严重：openclaw/hubble_credits 功能回退
+#### 🔴 严重：openclaw/flowmax_credits 功能回退
 
 cc 版本（v0.4.0）已包含的 `GET /api/v1/credits/packages` 与 `POST /api/v1/credits/deposits/by-package` **在 openclaw 版本（v0.2.0）里完全缺失**。
 - 影响：用户在 OpenClaw 下说"列出充值套餐"/"按套餐充值"时，skill 根本不会发起对应的 API 调用。
-- 建议：把 cc/skills/hubble_credits 的"List recharge packages" 和 "Create deposit by package" 两节合并到 openclaw 版本，统一升到 v0.4.0。
+- 建议：把 skills/flowmax_credits 的"List recharge packages" 和 "Create deposit by package" 两节合并到 openclaw 版本，统一升到 v0.4.0。
 
-#### 🔴 严重：openclaw 缺失 `hubble_auth`
+#### 🔴 严重：openclaw 缺失 `flowmax_auth`
 
-cc 有完整的 `hubble_auth`（邮箱验证码登录、钱包签名登录、`/auth/me`）。openclaw 完全没有这个 skill。
+cc 有完整的 `flowmax_auth`（邮箱验证码登录、钱包签名登录、`/auth/me`）。openclaw 完全没有这个 skill。
 - 影响：OpenClaw 用户无法用自然语言触发登录流程；必须预先手动拿到 JWT/API key 才能用其它 skill。
-- 建议：要么把 `cc/skills/hubble_auth/` 同步复制到 `openclaw/skills/`，要么在 OPENCLAW.md 里说明"登录流程不通过 skill"并提供替代指引。
+- 建议：要么把 `skills/flowmax_auth/` 同步复制到 `openclaw/skills/`，要么在 OPENCLAW.md 里说明"登录流程不通过 skill"并提供替代指引。
 
 #### 🟡 中等：顶层文档版本不一致
 
@@ -78,7 +78,7 @@ cc 有完整的 `hubble_auth`（邮箱验证码登录、钱包签名登录、`/a
 
 建议：统一改成 cc 的"Use when the user asks about..."模式。即便是 OpenClaw，这种 description 也更利于意图路由。
 
-#### 🟡 中等：`hubble_agents` description 没提 "deploy job / versions / rollback"
+#### 🟡 中等：`flowmax_agents` description 没提 "deploy job / versions / rollback"
 
 两组的 description 都只提到 "list, view, create, update, or delete"，但 skill body 里实际还支持：
 - 查询部署 job 状态（`GET /agents/user-research/jobs/{job_id}`）
@@ -89,14 +89,14 @@ cc 有完整的 `hubble_auth`（邮箱验证码登录、钱包签名登录、`/a
 
 建议：在 description 里显式加上 "deploy job status, versions, rollback, data sources, indicator templates"。
 
-#### 🟢 低：`hubble_pm_agent` 和 `hubble_agents` 在"list PM agents vs. PM status"上会轻度竞争
+#### 🟢 低：`flowmax_pm_agent` 和 `flowmax_agents` 在"list PM agents vs. PM status"上会轻度竞争
 
-- 当用户说"看看我的 PM agent"时，hubble_agents 会理解为 list；hubble_pm_agent 会理解为 status。
+- 当用户说"看看我的 PM agent"时，flowmax_agents 会理解为 list；flowmax_pm_agent 会理解为 status。
 - 实际两个 skill 都合理，最差情况是先走错再切换，代价不高。
 
-建议（可选）：在 hubble_pm_agent description 加一句 "for a specific PM agent by id"，暗示它是 per-agent 操作。
+建议（可选）：在 flowmax_pm_agent description 加一句 "for a specific PM agent by id"，暗示它是 per-agent 操作。
 
-#### 🟢 低：`hubble_logs` description 里未提 "PM positions / position logs / PM position symbols"
+#### 🟢 低：`flowmax_logs` description 里未提 "PM positions / position logs / PM position symbols"
 
 body 里有这些细分接口，但 description 只说 "positions"。绝大多数情况下足够，不是阻塞。
 
@@ -142,9 +142,9 @@ eval 数据集见 `docs/eval_prompts.json`（42 条：30 正例 + 4 歧义 + 6 �
 
 关键失败/边界用例（cc 组）：
 
-- ❌ `agents_pos_6` "查看 research agent 的部署 job 状态" → cc hubble_agents description 未提 "deploy job status"。即使 body 里支持，路由层可能不命中。
+- ❌ `agents_pos_6` "查看 research agent 的部署 job 状态" → cc flowmax_agents description 未提 "deploy job status"。即使 body 里支持，路由层可能不命中。
 - ⚠️ `agents_pos_8` "把这个 research agent 回滚到 v2" → 同上，description 没提 "rollback / versions"。
-- ⚠️ `amb_3` "我想在 hubble 上跑个新的 research agent" → 字面"跑" 容易优先匹配 hubble_runs，但用户意图是 create。需要 agent 做二次确认。
+- ⚠️ `amb_3` "我想在 flowmax 上跑个新的 research agent" → 字面"跑" 容易优先匹配 flowmax_runs，但用户意图是 create。需要 agent 做二次确认。
 - ⚠️ `amb_4` "我的账户里还有多少钱" → "多少钱" 比"credits 余额"模糊，描述文本未收录"账户/余额/钱"之类的中文词。
 
 ### 3.3 openclaw 组结果
@@ -158,24 +158,24 @@ eval 数据集见 `docs/eval_prompts.json`（42 条：30 正例 + 4 歧义 + 6 �
 
 关键失败用例（openclaw 组）：
 
-- ❌ 所有 `auth_pos_*` 6 条 → 无 `hubble_auth` skill，完全无法触发。
-- ❌ `credits_pos_4` "列出所有充值套餐" → openclaw/hubble_credits description 未提 packages。
+- ❌ 所有 `auth_pos_*` 6 条 → 无 `flowmax_auth` skill，完全无法触发。
+- ❌ `credits_pos_4` "列出所有充值套餐" → openclaw/flowmax_credits description 未提 packages。
 - ❌ `credits_pos_6` "按套餐下一个充值订单" → 同上。
 - ⚠️ `amb_4` "我的账户里还有多少钱" → openclaw description 风格声明式，"钱"语义匹配更弱。
 
 ### 3.4 Description 优化建议（可直接改 SKILL.md）
 
 ```diff
-- description: Query credits balance, transactions, deposits, and create recharge orders from Hubble Market Server using an API key.
-+ description: Use when the user asks about Hubble credits balance, account balance ("还有多少钱"), transaction history, deposits, recharge packages, or wants to recharge via a package or a specific amount.
+- description: Query credits balance, transactions, deposits, and create recharge orders from Flowmax Market Server using an API key.
++ description: Use when the user asks about Flowmax credits balance, account balance ("还有多少钱"), transaction history, deposits, recharge packages, or wants to recharge via a package or a specific amount.
 
-- description: Manage agents (PM agents, User Research agents, and generic agents) on Hubble Market Server using an API key.
+- description: Manage agents (PM agents, User Research agents, and generic agents) on Flowmax Market Server using an API key.
 + description: Use when the user asks to list, view, create, update, delete, or manage agents — including PM agents, User Research agents (data sources, indicator templates, deploy job status, version history, rollback), or generic agents.
 
-- description: Query and control PM-Agent status from Hubble Market Server using an API key (read/write).
+- description: Query and control PM-Agent status from Flowmax Market Server using an API key (read/write).
 + description: Use when the user asks about a specific PM-Agent's status, scheduler start/stop, decision trigger, position reconciliation, or emergency close — typically given an agent_id.
 
-- description: Create and query agent runs from Hubble Market Server using an API key, with x402 payment flow support.
+- description: Create and query agent runs from Flowmax Market Server using an API key, with x402 payment flow support.
 + description: Use when the user asks to run (execute) an agent, check a specific run's status, or list recent runs; note: "run" here means invoking an existing agent, not creating one.
 
 - description: Query agent logs, orders, positions, and PnL via /api/v1/agent-logs endpoints using an API key, with safe defaults to limit response size.
@@ -193,8 +193,8 @@ eval 数据集见 `docs/eval_prompts.json`（42 条：30 正例 + 4 歧义 + 6 �
 在你本地运行：
 
 ```bash
-export HUBBLE_API_BASE_URL="https://market-v2.bedev.hubble-rpc.xyz"
-export HUBBLE_API_KEY="hb_sk_...你的 key..."
+export FLOWMAX_API_BASE_URL="https://market-v2.bedev.hubble-rpc.xyz"
+export FLOWMAX_API_KEY="hb_sk_...你的 key..."
 bash docs/skills-selfcheck.sh
 ```
 
@@ -204,8 +204,8 @@ bash docs/skills-selfcheck.sh
 
 ## 5. 行动建议（按优先级）
 
-1. **P0**：把 openclaw 的 `hubble_credits` 升到 v0.4.0，补齐 `packages` 和 `deposits/by-package` 两个 action（参照 cc 版本直接拷贝相应章节）。
-2. **P0**：决定 openclaw 是否支持 `hubble_auth`。如要支持，直接 port `cc/skills/hubble_auth` → `openclaw/skills/hubble_auth`。
+1. **P0**：把 openclaw 的 `flowmax_credits` 升到 v0.4.0，补齐 `packages` 和 `deposits/by-package` 两个 action（参照 cc 版本直接拷贝相应章节）。
+2. **P0**：决定 openclaw 是否支持 `flowmax_auth`。如要支持，直接 port `skills/flowmax_auth` → `openclaw/skills/flowmax_auth`。
 3. **P1**：统一 description 模式到 "Use when the user asks..."，并在 description 里补齐 deploy job / versions / rollback / packages 等关键词。
 4. **P1**：修好 README.md / OPENCLAW.md / CC.md 顶层版本标注。建议加 `CHANGELOG.md` 统一管理每个 skill 的版本。
 5. **P2**：每个 skill 的 SKILL.md 建议新增 "Examples" 一节（2-3 个 "用户自然语言 → 最终 curl"），作为 eval 的 ground truth 来源。
@@ -217,22 +217,22 @@ bash docs/skills-selfcheck.sh
 
 | ID | prompt | 预期 skill | 命中（cc / openclaw） |
 |---|---|---|---|
-| auth_pos_1 | 帮我登录 Hubble Market | hubble_auth | ✅ / ❌ |
-| auth_pos_2 | 给我的邮箱发一个验证码 | hubble_auth | ✅ / ❌ |
-| auth_pos_5 | get me an access token from Hubble Market | hubble_auth | ✅ / ❌ |
-| credits_pos_1 | 查一下我的 Hubble credits 余额 | hubble_credits | ✅ / ✅ |
-| credits_pos_4 | 列出所有充值套餐 | hubble_credits | ✅ / ❌ |
-| credits_pos_6 | 按套餐下一个充值订单 | hubble_credits | ✅ / ❌ |
-| agents_pos_1 | 列出我的 PM agents | hubble_agents | ✅ / ✅ |
-| agents_pos_6 | 查看 research agent 的部署 job 状态 | hubble_agents | ❌ / ⚠️ |
-| agents_pos_8 | 把这个 research agent 回滚到 v2 | hubble_agents | ⚠️ / ⚠️ |
-| pm_pos_1 | 看看 PM-Agent 现在的状态 | hubble_pm_agent | ✅ / ✅ |
-| pm_pos_4 | 紧急平仓 | hubble_pm_agent | ✅ / ✅ |
-| runs_pos_1 | 跑一下这个 agent | hubble_runs | ✅ / ✅ |
-| logs_pos_1 | 看看最近的 PM 决策日志 | hubble_logs | ✅ / ✅ |
-| logs_pos_2 | 拉 BTCUSDT 最近一天的 PnL summary | hubble_logs | ✅ / ✅ |
-| amb_3 | 我想在 hubble 上跑个新的 research agent | hubble_agents | ⚠️ / ⚠️ |
-| amb_4 | 我的账户里还有多少钱 | hubble_credits | ⚠️ / ❌ |
+| auth_pos_1 | 帮我登录 Flowmax Market | flowmax_auth | ✅ / ❌ |
+| auth_pos_2 | 给我的邮箱发一个验证码 | flowmax_auth | ✅ / ❌ |
+| auth_pos_5 | get me an access token from Flowmax Market | flowmax_auth | ✅ / ❌ |
+| credits_pos_1 | 查一下我的 Flowmax credits 余额 | flowmax_credits | ✅ / ✅ |
+| credits_pos_4 | 列出所有充值套餐 | flowmax_credits | ✅ / ❌ |
+| credits_pos_6 | 按套餐下一个充值订单 | flowmax_credits | ✅ / ❌ |
+| agents_pos_1 | 列出我的 PM agents | flowmax_agents | ✅ / ✅ |
+| agents_pos_6 | 查看 research agent 的部署 job 状态 | flowmax_agents | ❌ / ⚠️ |
+| agents_pos_8 | 把这个 research agent 回滚到 v2 | flowmax_agents | ⚠️ / ⚠️ |
+| pm_pos_1 | 看看 PM-Agent 现在的状态 | flowmax_pm_agent | ✅ / ✅ |
+| pm_pos_4 | 紧急平仓 | flowmax_pm_agent | ✅ / ✅ |
+| runs_pos_1 | 跑一下这个 agent | flowmax_runs | ✅ / ✅ |
+| logs_pos_1 | 看看最近的 PM 决策日志 | flowmax_logs | ✅ / ✅ |
+| logs_pos_2 | 拉 BTCUSDT 最近一天的 PnL summary | flowmax_logs | ✅ / ✅ |
+| amb_3 | 我想在 flowmax 上跑个新的 research agent | flowmax_agents | ⚠️ / ⚠️ |
+| amb_4 | 我的账户里还有多少钱 | flowmax_credits | ⚠️ / ❌ |
 | neg_1 | 给我写一首关于 BTC 的诗 | none | ✅ / ✅ |
 | neg_4 | 用 Python 写一个快排 | none | ✅ / ✅ |
 

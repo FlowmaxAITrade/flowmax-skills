@@ -1,0 +1,11 @@
+{
+  "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
+  "name": "flowmax-skills",
+  "version": "1.0.0",
+  "description": "Flowmax 产品操作 skills：PM/Research Agent 管理、Credits 余额/充值、日志/订单/仓位/PnL、x402 付费 Run、排行榜、市场浏览、喊单、关注。",
+  "author": {
+    "name": "Flowmax",
+    "email": "alex@hubble.xyz"
+  },
+  "skills": ["./skills/"]
+}

@@ -1,0 +1,22 @@
+[
+  {"query": "Flowmax 市场上有哪些公开的 PM agent", "should_trigger": true},
+  {"query": "逛一下 Flowmax 市场看看有什么好 agent", "should_trigger": true},
+  {"query": "看看这个公开 PM agent 的最近 5 轮决策", "should_trigger": true},
+  {"query": "Flowmax 上这个公开 agent 的持仓是什么", "should_trigger": true},
+  {"query": "这个公开 agent 的 PnL 汇总怎么样", "should_trigger": true},
+  {"query": "浏览 Flowmax 公开的 research agents", "should_trigger": true},
+  {"query": "这个公开 agent 的订单记录给我看下", "should_trigger": true},
+  {"query": "Flowmax 市场里找找做 BTC 的 agent", "should_trigger": true},
+  {"query": "看下公开 agent 的日志", "should_trigger": true},
+  {"query": "这个公开 agent 某一轮的决策细节", "should_trigger": true},
+  {"query": "创建我自己的 PM agent", "should_trigger": false},
+  {"query": "查我的 credits 余额", "should_trigger": false},
+  {"query": "看下 Flowmax 排行榜", "should_trigger": false},
+  {"query": "写一首关于春天的诗", "should_trigger": false},
+  {"query": "follow 这个 agent", "should_trigger": false},
+  {"query": "看我自己 agent 的订单", "should_trigger": false},
+  {"query": "明天天气怎么样", "should_trigger": false},
+  {"query": "跑一下这个 agent 的 run", "should_trigger": false},
+  {"query": "我的 agent scheduler 状态", "should_trigger": false},
+  {"query": "解释一下什么是均线", "should_trigger": false}
+]

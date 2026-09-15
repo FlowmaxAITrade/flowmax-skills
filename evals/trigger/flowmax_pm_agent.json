@@ -6,7 +6,7 @@
   {"query": "跑一次 reconcile，我怀疑交易所和我们 position manager 的仓位对不上了", "should_trigger": true},
   {"query": "紧急平仓！pm agent 7f1e8b2a-3d4c-4f5e-9a0b-1c2d3e4f5a6b 全部仓位立刻关掉，reason 写 'manual stop loss'", "should_trigger": true},
   {"query": "只平 BTCUSDT 和 ETHUSDT 两个 symbol 的仓位，其它保留", "should_trigger": true},
-  {"query": "hubble pm agent scheduler 是不是跑飞了，status 返回的 last_tick 离现在多久", "should_trigger": true},
+  {"query": "flowmax pm agent scheduler 是不是跑飞了，status 返回的 last_tick 离现在多久", "should_trigger": true},
   {"query": "给 pm agent 7f1e8b2a-3d4c-4f5e-9a0b-1c2d3e4f5a6b trigger 一下", "should_trigger": true},
   {"query": "stop the pm agent scheduler immediately", "should_trigger": true},
   {"query": "列出我所有的 pm agent", "should_trigger": false},
@@ -17,6 +17,6 @@
   {"query": "跑一下这个 agent 的 run", "should_trigger": false},
   {"query": "kubernetes cronjob 怎么配置", "should_trigger": false},
   {"query": "celery beat scheduler 怎么启动", "should_trigger": false},
-  {"query": "hubble credits 余额", "should_trigger": false},
+  {"query": "flowmax credits 余额", "should_trigger": false},
   {"query": "怎么给 binance 下一个市价单", "should_trigger": false}
 ]

@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-Cross-skill routing eval runner for hubble-skills.
+Cross-skill routing eval runner for flowmax-skills.
 
 For each prompt in routing_eval.json:
   - Load all SKILL.md descriptions under a given skills/ directory
   - Ask the model which skill (if any) should be invoked
   - Compare the model's choice to the expected skill and tally accuracy
 
-Runs per variant (cc / openclaw) and writes a results JSON + pretty Markdown.
+Runs per variant (flowmax) and writes a results JSON + pretty Markdown.
 
 Backend is chosen by ``evals/_llm.py``:
   - If ANTHROPIC_API_KEY is set → direct API via urllib (prefill-enabled).
@@ -16,12 +16,12 @@ Backend is chosen by ``evals/_llm.py``:
 
 Usage:
   # Local (Pro/Max subscription) — no API key needed:
-  python evals/routing/run_routing_eval.py --skills-root cc/skills --variant cc \\
+  python evals/routing/run_routing_eval.py --skills-root skills --variant flowmax \\
       --out evals/results/routing-cc.json
 
   # CI / with an API key:
   export ANTHROPIC_API_KEY=sk-ant-...
-  python evals/routing/run_routing_eval.py --skills-root cc/skills --variant cc \\
+  python evals/routing/run_routing_eval.py --skills-root skills --variant flowmax \\
       --out evals/results/routing-cc.json
 
 Zero runtime deps — Python 3.9+ stdlib only.
@@ -252,16 +252,16 @@ def format_markdown(summary: dict, results: list[CaseResult], variant: str, mode
     return "\n".join(lines)
 
 
-DEFAULT_MODEL = os.environ.get("HUBBLE_EVAL_MODEL", "claude-sonnet-4-6")
+DEFAULT_MODEL = os.environ.get("FLOWMAX_EVAL_MODEL", "claude-sonnet-5")
 
 
 def main(argv: list[str]) -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--skills-root", required=True, help="Path to */skills directory (e.g. cc/skills)")
-    ap.add_argument("--variant", required=True, help="Label for this run (cc / openclaw / ...)")
+    ap.add_argument("--skills-root", required=True, help="Path to */skills directory (e.g. skills)")
+    ap.add_argument("--variant", required=True, help="Label for this run (flowmax / ...)")
     ap.add_argument("--eval", default="evals/routing/routing_eval.json")
     ap.add_argument("--out", default="evals/results/routing.json")
-    ap.add_argument("--workers", type=int, default=int(os.environ.get("HUBBLE_EVAL_WORKERS", "6")))
+    ap.add_argument("--workers", type=int, default=int(os.environ.get("FLOWMAX_EVAL_WORKERS", "6")))
     ap.add_argument("--model", default=DEFAULT_MODEL, help=f"Anthropic model id (default: {DEFAULT_MODEL})")
     ap.add_argument("--dry-run", action="store_true", help="Print resolved skills + first prompt, then exit.")
     ap.add_argument("--limit", type=int, default=0, help="If >0, only run the first N cases.")

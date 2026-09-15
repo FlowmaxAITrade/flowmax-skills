@@ -1,4 +1,4 @@
-"""Unified LLM caller for hubble-skills evals.
+"""Unified LLM caller for flowmax-skills evals.
 
 Two modes, auto-detected at call time:
 
@@ -176,7 +176,7 @@ def _make_eval_cwd() -> str:
     Safe cleanup: :func:`shutil.rmtree` on the returned path only removes the
     empty temp dir — no real config files are touched.
     """
-    return tempfile.mkdtemp(prefix="hubble-eval-claude-")
+    return tempfile.mkdtemp(prefix="flowmax-eval-claude-")
 
 
 def _call_cli(

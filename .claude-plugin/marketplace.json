@@ -1,0 +1,19 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "flowmax-skills",
+  "owner": {
+    "name": "Flowmax",
+    "email": "alex@hubble.xyz"
+  },
+  "metadata": {
+    "description": "Flowmax 产品操作 skills"
+  },
+  "plugins": [
+    {
+      "name": "flowmax-skills",
+      "source": "./",
+      "description": "Flowmax 产品操作 skills：Agent 管理、Credits、日志/订单/仓位、Run、排行榜、市场、喊单、关注",
+      "version": "1.0.0"
+    }
+  ]
+}

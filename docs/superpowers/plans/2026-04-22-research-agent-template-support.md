@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** 为 `hubble_agents` skill 的 User Research Agent 创建流程增加模板支持，让用户可以直接从预设模板快速创建 Agent，无需手动选择指标或编写 prompt。
+**Goal:** 为 `flowmax_agents` skill 的 User Research Agent 创建流程增加模板支持，让用户可以直接从预设模板快速创建 Agent，无需手动选择指标或编写 prompt。
 
 **Architecture:** 纯 Markdown 文件修改，无代码变更。两个 skill 文件（`cc/` 和 `openclaw/`）同步更新，同时更新包版本号相关文件。
 
@@ -14,24 +14,24 @@
 
 | 文件 | 操作 | 说明 |
 |---|---|---|
-| `cc/skills/hubble_agents/SKILL.md` | 修改 | 主体改动：版本号、新端点、创建流程 |
-| `openclaw/skills/hubble_agents/SKILL.md` | 修改 | 同步相同功能改动，保持 openclaw 格式 |
+| `skills/flowmax_agents/SKILL.md` | 修改 | 主体改动：版本号、新端点、创建流程 |
+| `openclaw/skills/flowmax_agents/SKILL.md` | 修改 | 同步相同功能改动，保持 openclaw 格式 |
 | `VERSION` | 修改 | `v0.4.0` → `v0.5.0` |
 | `CC.md` | 修改 | `v0.4.0` → `v0.5.0` |
 | `README.md` | 修改 | `v0.3.0` → `v0.5.0` |
 
 ---
 
-## Task 1: 更新 cc/skills/hubble_agents/SKILL.md
+## Task 1: 更新 skills/flowmax_agents/SKILL.md
 
 **Files:**
-- Modify: `cc/skills/hubble_agents/SKILL.md`
+- Modify: `skills/flowmax_agents/SKILL.md`
 
 - [ ] **Step 1: 确认当前文件内容**
 
 ```bash
 grep -n "Version:\|自适应创建流程\|查询可用数据源\|indicator" \
-  cc/skills/hubble_agents/SKILL.md
+  skills/flowmax_agents/SKILL.md
 ```
 
 预期输出包含：`Version: v0.3.1`、`自适应创建流程`、`查询可用数据源`，且不含 `indicator-templates`。
@@ -140,7 +140,7 @@ curl -sS --fail-with-body \
 
 ```bash
 grep -n "Version:\|模板创建路径\|indicator-templates\|其他情况" \
-  cc/skills/hubble_agents/SKILL.md
+  skills/flowmax_agents/SKILL.md
 ```
 
 预期：
@@ -153,16 +153,16 @@ grep -n "Version:\|模板创建路径\|indicator-templates\|其他情况" \
 - [ ] **Step 7: Commit**
 
 ```bash
-git add cc/skills/hubble_agents/SKILL.md
-git commit -m "feat(cc): hubble_agents v0.5.0 — 新增 User Research Agent 模板创建路径"
+git add skills/flowmax_agents/SKILL.md
+git commit -m "feat(cc): flowmax_agents v0.5.0 — 新增 User Research Agent 模板创建路径"
 ```
 
 ---
 
-## Task 2: 更新 openclaw/skills/hubble_agents/SKILL.md
+## Task 2: 更新 openclaw/skills/flowmax_agents/SKILL.md
 
 **Files:**
-- Modify: `openclaw/skills/hubble_agents/SKILL.md`
+- Modify: `openclaw/skills/flowmax_agents/SKILL.md`
 
 openclaw 版本结构与 cc 版本基本相同，但动作节使用 `### Action:` 前缀，自适应逻辑略有差异。
 
@@ -170,7 +170,7 @@ openclaw 版本结构与 cc 版本基本相同，但动作节使用 `### Action:
 
 ```bash
 grep -n "Version:\|自适应收集参数\|查询可用数据源\|indicator" \
-  openclaw/skills/hubble_agents/SKILL.md
+  openclaw/skills/flowmax_agents/SKILL.md
 ```
 
 预期：含 `Version: v0.3.1`、`自适应收集参数`；不含 `indicator-templates`。
@@ -232,7 +232,7 @@ Version: v0.5.0
 
 找到 openclaw 版本中"查询可用数据源"节末尾（`---` 之前）：
 ```bash
-grep -n "查询可用数据源\|列出 User Research" openclaw/skills/hubble_agents/SKILL.md
+grep -n "查询可用数据源\|列出 User Research" openclaw/skills/flowmax_agents/SKILL.md
 ```
 
 在对应位置的 `---` 与下一个 `### Action:` 之间插入：
@@ -263,7 +263,7 @@ Call:
 
 ```bash
 grep -n "Version:\|模板创建路径\|indicator-templates\|其他情况" \
-  openclaw/skills/hubble_agents/SKILL.md
+  openclaw/skills/flowmax_agents/SKILL.md
 ```
 
 预期：含 `Version: v0.5.0`、`模板创建路径`、`indicator-templates`、`其他情况`；不含 `v0.3.1`。
@@ -271,8 +271,8 @@ grep -n "Version:\|模板创建路径\|indicator-templates\|其他情况" \
 - [ ] **Step 7: Commit**
 
 ```bash
-git add openclaw/skills/hubble_agents/SKILL.md
-git commit -m "feat(openclaw): hubble_agents v0.5.0 — 同步新增 User Research Agent 模板创建路径"
+git add openclaw/skills/flowmax_agents/SKILL.md
+git commit -m "feat(openclaw): flowmax_agents v0.5.0 — 同步新增 User Research Agent 模板创建路径"
 ```
 
 ---
@@ -338,5 +338,5 @@ cat VERSION && grep "版本\|Version" CC.md README.md
 
 ```bash
 git add VERSION CC.md README.md
-git commit -m "chore: 升级 Skills 至 v0.5.0，hubble_agents 新增模板创建支持"
+git commit -m "chore: 升级 Skills 至 v0.5.0，flowmax_agents 新增模板创建支持"
 ```

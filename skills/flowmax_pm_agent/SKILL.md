@@ -1,11 +1,11 @@
 ---
-name: hubble_pm_agent
-description: Use when the user asks about PM-Agent status, starting or stopping the scheduler, triggering a decision, reconciling positions, or performing emergency close actions via the Hubble Market API.
+name: flowmax_pm_agent
+description: Use when the user asks about PM-Agent status, starting or stopping the scheduler, triggering a decision, reconciling positions, recovering a stuck PM, issuing a WebSocket ticket, or performing emergency close actions via the Flowmax Market API.
 ---
 
-# Hubble PM-Agent Skill
+# Flowmax PM-Agent Skill
 
-Version: v0.2.1
+Version: v1.0.0
 
 ## When to use
 
@@ -15,26 +15,28 @@ Use this skill when the user asks about:
 - Starting or stopping the scheduler
 - Manually triggering a decision round
 - Manual reconciliation of positions
+- Recovering a PM agent stuck during creation
+- Issuing a WebSocket ticket for live monitoring
 - Emergency close (all positions or specific symbols)
 
 ## Requirements
 
 Read from environment:
 
-- `HUBBLE_API_BASE_URL` — default: `https://market-v2.bedev.hubble-rpc.xyz`
-- `HUBBLE_API_KEY` — must start with `hb_sk_`
+- `FLOWMAX_API_BASE_URL` — default: `https://market.dev.gcp.hubble-rpc.xyz`
+- `FLOWMAX_API_KEY` — must start with `hb_sk_`
 
 ## Safety rules
 
-- **Never print `HUBBLE_API_KEY`**.
+- **Never print `FLOWMAX_API_KEY`**.
 - Validate `agent_id` format before use: `^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$`
-- For **all write actions** (`POST`), repeat back: `HUBBLE_API_BASE_URL`, `agent_id`, action name, and any parameters — then wait for explicit "yes" / "confirm" before calling.
+- For **all write actions** (`POST`), repeat back: `FLOWMAX_API_BASE_URL`, `agent_id`, action name, and any parameters — then wait for explicit "yes" / "confirm" before calling.
 - For emergency close actions, always ask for confirmation even if the user seems certain.
 
 ## Setup
 
 ```bash
-BASE="${HUBBLE_API_BASE_URL%/}"
+BASE="${FLOWMAX_API_BASE_URL%/}"
 [[ ! "$AGENT_ID" =~ ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$ ]] && echo "Invalid agent_id" && exit 2
 ```
 
@@ -46,7 +48,7 @@ BASE="${HUBBLE_API_BASE_URL%/}"
 
 ```bash
 curl -sS --fail-with-body \
-  -H "Authorization: Bearer $HUBBLE_API_KEY" \
+  -H "Authorization: Bearer $FLOWMAX_API_KEY" \
   "$BASE/api/v1/agents/pm/$AGENT_ID/status"
 ```
 
@@ -58,7 +60,7 @@ Optional body: `{"interval_ms": <integer>}` — include if user specifies a cust
 
 ```bash
 curl -sS --fail-with-body \
-  -H "Authorization: Bearer $HUBBLE_API_KEY" \
+  -H "Authorization: Bearer $FLOWMAX_API_KEY" \
   -H "Content-Type: application/json" \
   -X POST \
   "$BASE/api/v1/agents/pm/$AGENT_ID/scheduler/start" \
@@ -71,7 +73,7 @@ curl -sS --fail-with-body \
 
 ```bash
 curl -sS --fail-with-body \
-  -H "Authorization: Bearer $HUBBLE_API_KEY" \
+  -H "Authorization: Bearer $FLOWMAX_API_KEY" \
   -H "Content-Type: application/json" \
   -X POST \
   "$BASE/api/v1/agents/pm/$AGENT_ID/scheduler/stop"
@@ -83,7 +85,7 @@ curl -sS --fail-with-body \
 
 ```bash
 curl -sS --fail-with-body \
-  -H "Authorization: Bearer $HUBBLE_API_KEY" \
+  -H "Authorization: Bearer $FLOWMAX_API_KEY" \
   -H "Content-Type: application/json" \
   -X POST \
   "$BASE/api/v1/agents/pm/$AGENT_ID/trigger"
@@ -97,10 +99,38 @@ Use when positions may be out of sync. Proxies to Position Manager.
 
 ```bash
 curl -sS --fail-with-body \
-  -H "Authorization: Bearer $HUBBLE_API_KEY" \
+  -H "Authorization: Bearer $FLOWMAX_API_KEY" \
   -H "Content-Type: application/json" \
   -X POST \
   "$BASE/api/v1/agents/pm/$AGENT_ID/reconcile"
+```
+
+---
+
+### Recover stuck PM creation — requires confirmation
+
+Use when a PM agent is stuck in a half-created state.
+
+```bash
+curl -sS --fail-with-body \
+  -H "Authorization: Bearer $FLOWMAX_API_KEY" \
+  -H "Content-Type: application/json" \
+  -X POST \
+  "$BASE/api/v1/agents/pm/$AGENT_ID/reconcile-creation"
+```
+
+---
+
+### Issue WebSocket ticket — for live monitoring
+
+返回一次性 WebSocket ticket，供客户端建立到 PM-Agent 的实时连接。
+
+```bash
+curl -sS --fail-with-body \
+  -H "Authorization: Bearer $FLOWMAX_API_KEY" \
+  -H "Content-Type: application/json" \
+  -X POST \
+  "$BASE/api/v1/agents/pm/$AGENT_ID/ws-ticket"
 ```
 
 ---
@@ -111,7 +141,7 @@ Optional body: `{"reason": "<string>"}`.
 
 ```bash
 curl -sS --fail-with-body \
-  -H "Authorization: Bearer $HUBBLE_API_KEY" \
+  -H "Authorization: Bearer $FLOWMAX_API_KEY" \
   -H "Content-Type: application/json" \
   -X POST \
   "$BASE/api/v1/agents/pm/$AGENT_ID/emergency-close" \
@@ -126,7 +156,7 @@ Symbols must be uppercase and slashless (e.g. `BTCUSDT`).
 
 ```bash
 curl -sS --fail-with-body \
-  -H "Authorization: Bearer $HUBBLE_API_KEY" \
+  -H "Authorization: Bearer $FLOWMAX_API_KEY" \
   -H "Content-Type: application/json" \
   -X POST \
   "$BASE/api/v1/agents/pm/$AGENT_ID/emergency-close-symbols" \

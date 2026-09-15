@@ -449,7 +449,7 @@ POST /api/v1/agents/user-research/{agent_id}/versions/{version}/rollback
 | 环境变量 | 默认值 | 说明 |
 |---------|--------|------|
 | `RESEARCH_CREATOR_BASE_URL` | — | Creator 服务地址 |
-| `RESEARCH_CREATOR_AUTH_KEY` | — | Creator 鉴权密钥，降级用 `HUBBLE_AUTH_KEY` |
+| `RESEARCH_CREATOR_AUTH_KEY` | — | Creator 鉴权密钥，降级用 `FLOWMAX_AUTH_KEY` |
 | `RESEARCH_CREATOR_SYNC_INTERVAL` | 30 | 后台同步间隔（秒） |
 | `RESEARCH_CREATOR_REQUEST_TIMEOUT` | 30 | HTTP 请求超时（秒） |
 
