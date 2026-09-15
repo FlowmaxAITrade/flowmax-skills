@@ -34,7 +34,18 @@ export FLOWMAX_API_KEY="hb_sk_xxxxxxxxxxxxxxxxx"
 
 ## 安装
 
-作为 Claude Code 插件安装（`.claude-plugin/plugin.json` + `skills/`）。也可 symlink 单个 skill 到 `~/.claude/skills/` 本地调试。
+在 Claude Code 里执行：
+
+```
+/plugin marketplace add FlowmaxAITrade/flowmax-skills
+/plugin install flowmax-skills
+```
+
+安装后即可在任意目录触发这些 skill。
+
+> 经 marketplace 安装后，插件的**完整名**是 `flowmax-skills@flowmax-skills`（`插件名@marketplace名`）。下面「更新」和 `uninstall` 都要用这个完整名。
+
+本地调试可 symlink 单个 skill 到 `~/.claude/skills/`。
 
 ## 运行 Evals
 
@@ -43,6 +54,25 @@ export FLOWMAX_API_KEY="hb_sk_xxxxxxxxxxxxxxxxx"
 ## 设计原则
 
 见 [docs/skill-design-principles.md](./docs/skill-design-principles.md)。
+
+## 版本发布
+
+版本号**手动**管理（无构建产物，不需要 release-please）：
+
+1. 把 `plugin.json` 的 `version` 和 `.claude-plugin/marketplace.json` 的 `plugins[].version` **同步**改成新版本（语义化版本，如 `1.0.1`）。
+2. 打 tag（会自动校验两处版本一致；tag 格式固定为 `flowmax-skills--v<version>`）：
+
+```bash
+claude plugin tag --push          # 或先 --dry-run 预览
+```
+
+3. 用户侧更新到最新版本（`update` 是 `claude plugin` 的 CLI 命令，不是斜杠命令；用完整名）：
+
+```bash
+claude plugin update flowmax-skills@flowmax-skills
+```
+
+更新后需重启 Claude Code 生效。
 
 ## 迁移说明
 

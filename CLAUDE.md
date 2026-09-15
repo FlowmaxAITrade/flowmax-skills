@@ -83,7 +83,18 @@ FLOWMAX_EVAL_MODEL=claude-sonnet-5 bash evals/run_all.sh routing
 - [ ] `evals/trigger/<new_skill>.json` 有 10 正 + 10 负共 20 条测试
 - [ ] `evals/routing/routing_eval.json` 里有至少 2 条正例
 
-## 安装 Skills（本地验证用）
+## 安装 Skills
+
+正式安装走 marketplace：
+
+```
+/plugin marketplace add FlowmaxAITrade/flowmax-skills
+/plugin install flowmax-skills
+```
+
+完整名 `flowmax-skills@flowmax-skills`（`插件名@marketplace名`，更新/卸载用完整名）。
+
+本地调试可用 symlink：
 
 ```bash
 mkdir -p ~/.claude/skills
