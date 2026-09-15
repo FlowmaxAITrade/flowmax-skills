@@ -1,6 +1,6 @@
 ---
 name: flowmax_pm_agent
-description: Use when the user asks about PM-Agent status, starting or stopping the scheduler, triggering a decision, reconciling positions, recovering a stuck PM, issuing a WebSocket ticket, or performing emergency close actions via the Flowmax Market API.
+description: Use when the user asks about PM-Agent status, starting or stopping the scheduler, triggering a decision, reconciling positions, recovering a stuck PM, issuing a WebSocket ticket, or performing emergency close actions (all positions or specific symbols) via the Flowmax Market API.
 ---
 
 # Flowmax PM-Agent Skill

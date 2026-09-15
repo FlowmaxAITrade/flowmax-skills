@@ -1,6 +1,6 @@
 ---
 name: flowmax_leaderboard
-description: Use when the user asks about Flowmax leaderboards — top fund managers (PM) ranked by PnL or win rate, the period champion, top analysts ranked by accuracy, or the real-time leaderboard stream. Read-only, no write actions.
+description: Use when the user asks about Flowmax leaderboards — top fund managers (PM) ranked by PnL, win rate, or followers, the period champion, top analysts ranked by accuracy, or the real-time leaderboard stream. Read-only, no write actions.
 ---
 
 # Flowmax Leaderboard Skill
