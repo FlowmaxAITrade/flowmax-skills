@@ -5,7 +5,7 @@ description: Use when the user wants to browse or discover public agents on the 
 
 # Flowmax Marketplace Skill
 
-Version: v1.0.0
+Version: v1.0.1
 
 ## When to use
 

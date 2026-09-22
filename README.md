@@ -1,6 +1,6 @@
 # flowmax-skills
 
-Version: v1.0.0
+Version: v1.0.1
 
 Flowmax 产品操作 skills 包，为 Claude Code 提供操作 Flowmax Market API 的能力。以 Claude Code 插件形式分发（`.claude-plugin/`），skills 位于 `skills/`。
 
@@ -12,7 +12,6 @@ Flowmax 产品操作 skills 包，为 Claude Code 提供操作 Flowmax Market AP
 | `flowmax_credits` | 积分余额查询、充值、流水记录 |
 | `flowmax_logs` | PM 决策/研究日志、订单、仓位、PnL、账户权益 |
 | `flowmax_pm_agent` | PM agent 状态与调度管理、对账、紧急平仓 |
-| `flowmax_runs` | 已有 agent 的 x402 付费执行（pay-per-run） |
 | `flowmax_leaderboard` | 基金经理 / 分析师排行榜（公开只读） |
 | `flowmax_marketplace` | 浏览公开 agent 及其决策/订单/仓位/PnL |
 | `flowmax_callout` | 喊单广场实时流（SSE） |

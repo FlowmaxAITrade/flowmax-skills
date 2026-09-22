@@ -10,7 +10,6 @@ evals/
 │   ├── flowmax_credits.json        # 20 条: 10 should-trigger + 10 near-miss
 │   ├── flowmax_agents.json
 │   ├── flowmax_pm_agent.json
-│   ├── flowmax_runs.json
 │   ├── flowmax_logs.json
 │   ├── flowmax_leaderboard.json
 │   ├── flowmax_marketplace.json
@@ -60,4 +59,4 @@ FLOWMAX_EVAL_LIMIT=3 bash evals/run_all.sh
 FLOWMAX_EVAL_MODEL=claude-sonnet-5 bash evals/run_all.sh routing
 ```
 
-CLI 模式下每次调用会起一个 `claude -p` 子进程，开销比 API 模式大。runner 会把 `--workers` 自动 clamp 到 4；全量跑（9 个 skill × 20 条 trigger + 约 60 条 routing）预期在 5–15 分钟，取决于网络和模型。
+CLI 模式下每次调用会起一个 `claude -p` 子进程，开销比 API 模式大。runner 会把 `--workers` 自动 clamp 到 4；全量跑（8 个 skill × 20 条 trigger + 约 60 条 routing）预期在 5–15 分钟，取决于网络和模型。

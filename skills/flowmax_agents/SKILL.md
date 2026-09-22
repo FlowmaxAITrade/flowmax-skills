@@ -1,11 +1,11 @@
 ---
 name: flowmax_agents
-description: Use when the user asks to list, view, create, update, delete, or deploy agents on Flowmax — including PM agents (CRUD, fork/switch), and User Research agents (create/update/delete, run a new research agent, deploy job status, version history, rollback, data sources, indicator templates). NOTE "run / 跑 a research agent" in Flowmax means creating or deploying one here, not the x402 pay-per-execution flow handled by flowmax_runs.
+description: Use when the user asks to list, view, create, update, delete, or deploy agents on Flowmax — including PM agents (CRUD, fork/switch), and User Research agents (create/update/delete, run a new research agent, deploy job status, version history, rollback, data sources, indicator templates). NOTE "run / 跑 a research agent" in Flowmax means creating or deploying one here.
 ---
 
 # Flowmax Agents Skill
 
-Version: v1.0.0
+Version: v1.0.1
 
 ## When to use
 

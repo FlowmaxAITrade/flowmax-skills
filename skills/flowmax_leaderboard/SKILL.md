@@ -5,7 +5,7 @@ description: Use when the user asks about Flowmax leaderboards — top fund mana
 
 # Flowmax Leaderboard Skill
 
-Version: v1.0.0
+Version: v1.0.1
 
 ## When to use
 

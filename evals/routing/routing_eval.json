@@ -31,10 +31,10 @@
     {"id": "pm_pos_5", "prompt": "给 Flowmax PM agent 重新对一下仓位（reconcile）", "expected": "flowmax_pm_agent", "category": "positive"},
     {"id": "pm_pos_6", "prompt": "stop the Flowmax PM agent scheduler", "expected": "flowmax_pm_agent", "category": "positive"},
 
-    {"id": "runs_pos_1", "prompt": "跑一下 Flowmax agent 7f1e8b2a-3d4c-4f5e-9a0b-1c2d3e4f5a6b 的一次 run", "expected": "flowmax_runs", "category": "positive"},
-    {"id": "runs_pos_2", "prompt": "查一下 Flowmax 这个 run a1b2c3 的状态", "expected": "flowmax_runs", "category": "positive"},
-    {"id": "runs_pos_3", "prompt": "列出 Flowmax 这个 agent 最近的 runs", "expected": "flowmax_runs", "category": "positive"},
-    {"id": "runs_pos_4", "prompt": "poll the Flowmax run progress for run a1b2c3", "expected": "flowmax_runs", "category": "positive"},
+    {"id": "runs_neg_1", "prompt": "跑一下 Flowmax agent 7f1e8b2a-3d4c-4f5e-9a0b-1c2d3e4f5a6b 的一次 run", "expected": null, "category": "negative"},
+    {"id": "runs_neg_2", "prompt": "查一下 Flowmax 这个 run a1b2c3 的状态", "expected": null, "category": "negative"},
+    {"id": "runs_neg_3", "prompt": "列出 Flowmax 这个 agent 最近的 runs", "expected": null, "category": "negative"},
+    {"id": "runs_neg_4", "prompt": "poll the Flowmax run progress for run a1b2c3", "expected": null, "category": "negative"},
 
     {"id": "logs_pos_1", "prompt": "看看 Flowmax 最近的 PM 决策日志", "expected": "flowmax_logs", "category": "positive"},
     {"id": "logs_pos_2", "prompt": "拉 Flowmax 上 BTCUSDT 最近一天的 PnL summary", "expected": "flowmax_logs", "category": "positive"},
@@ -58,7 +58,7 @@
     {"id": "follows_pos_2", "prompt": "我关注了哪些 Flowmax agent", "expected": "flowmax_follows", "category": "positive"},
     {"id": "follows_pos_3", "prompt": "取关这个 agent", "expected": "flowmax_follows", "category": "positive"},
 
-    {"id": "amb_3", "prompt": "我想在 Flowmax 上跑个新的 research agent", "expected": "flowmax_agents", "category": "ambiguous", "note": "'跑' 容易误触发 flowmax_runs；正确应走 flowmax_agents（创建）"},
+    {"id": "amb_3", "prompt": "我想在 Flowmax 上跑个新的 research agent", "expected": "flowmax_agents", "category": "ambiguous", "note": "'跑新的 research agent' 应走 flowmax_agents（创建/部署）"},
     {"id": "amb_4", "prompt": "我 Flowmax 账户里还有多少钱？", "expected": "flowmax_credits", "category": "ambiguous", "note": "'钱'（在 Flowmax 语境下=credits 余额）"},
     {"id": "amb_5", "prompt": "关注排行榜第一名", "expected": "flowmax_follows", "category": "ambiguous", "note": "'关注' 是 follow 动作，不是查排行榜（flowmax_leaderboard）"},
     {"id": "amb_6", "prompt": "看下这个公开 agent 的订单", "expected": "flowmax_marketplace", "category": "ambiguous", "note": "'公开 agent' 走 marketplace；'我自己的 agent' 才走 flowmax_logs"},

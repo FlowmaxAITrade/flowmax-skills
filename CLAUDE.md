@@ -4,14 +4,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 仓库概述
 
-`flowmax-skills` 是一个 AI assistant skill 包，为 Claude Code 提供操作 Flowmax Market API 的能力。当前版本：`v1.0.0`（见 `VERSION`）。
+`flowmax-skills` 是一个 AI assistant skill 包，为 Claude Code 提供操作 Flowmax Market API 的能力。当前版本：`v1.0.1`（见 `VERSION`）。
 
 每个 skill 对应一类业务操作，通过 `FLOWMAX_API_KEY`（前缀 `hb_sk_`）鉴权，直接调 REST API。网关为 Market Server，默认 dev 域名 `https://market.dev.gcp.hubble-rpc.xyz`。
 
 ## 目录结构
 
 ```
-skills/             # Claude Code skills（9 个，每个 skill 一个 SKILL.md）
+skills/             # Claude Code skills（8 个，每个 skill 一个 SKILL.md）
 evals/              # 自动化 eval 套件
   trigger/          # per-skill should_trigger 测试（每个 skill 20 条）
   routing/          # 跨 skill 路由测试
@@ -28,7 +28,6 @@ docs/               # 设计文档和原则
 | `flowmax_credits` | 积分余额查询、充值、流水记录 |
 | `flowmax_logs` | PM agent 决策日志、订单、仓位、PnL、账户权益 |
 | `flowmax_pm_agent` | PM agent 状态与调度管理 |
-| `flowmax_runs` | 已有 agent 的 x402 付费执行（pay-per-run） |
 | `flowmax_leaderboard` | 基金经理 / 分析师排行榜 |
 | `flowmax_marketplace` | 浏览公开 agent |
 | `flowmax_callout` | 喊单广场实时流 |
@@ -74,7 +73,7 @@ FLOWMAX_EVAL_MODEL=claude-sonnet-5 bash evals/run_all.sh routing
 
 **原则 2**：skill 的 `description` 必须覆盖 body 里的所有操作类型——description 是 LLM router 唯一能看到的摘要。
 
-**原则 3**：有语义重叠的 skill，两边 description 都要显式划边界。在 Flowmax 业务里，"run" 专指 x402 付费执行（`flowmax_runs`），"跑 research agent"是创建/部署（`flowmax_agents`）。
+**原则 3**：有语义重叠的 skill，description 要显式划边界；“跑 research agent”是创建/部署（`flowmax_agents`）。
 
 **新建 skill 检查清单**（每次都跑）：
 - [ ] description 无 "login"、"sign in"、"access token"、"authenticate" 等字样
@@ -101,7 +100,6 @@ mkdir -p ~/.claude/skills
 ln -sfn "$(pwd)/skills/flowmax_credits"      ~/.claude/skills/flowmax_credits
 ln -sfn "$(pwd)/skills/flowmax_agents"       ~/.claude/skills/flowmax_agents
 ln -sfn "$(pwd)/skills/flowmax_pm_agent"     ~/.claude/skills/flowmax_pm_agent
-ln -sfn "$(pwd)/skills/flowmax_runs"         ~/.claude/skills/flowmax_runs
 ln -sfn "$(pwd)/skills/flowmax_logs"         ~/.claude/skills/flowmax_logs
 ln -sfn "$(pwd)/skills/flowmax_leaderboard"  ~/.claude/skills/flowmax_leaderboard
 ln -sfn "$(pwd)/skills/flowmax_marketplace"  ~/.claude/skills/flowmax_marketplace

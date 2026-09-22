@@ -1,5 +1,7 @@
 # Flowmax Skills 迁移升级计划
 
+> 历史文档：x402 付费执行 skill（flowmax_runs）现已移除，相关清单与结论不代表当前能力。
+
 > 从 `hubble-skills` 迁移并升级为 `flowmax-skills`。版本目标：`v1.0.0`（品牌重命名属 breaking）。
 
 ## 背景结论

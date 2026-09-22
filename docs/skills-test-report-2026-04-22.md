@@ -1,4 +1,6 @@
 > **⚠️ 2026-04-23 更新 / 结论修正**
+
+> 历史文档：x402 付费执行 skill（flowmax_runs）现已移除，相关清单与结论不代表当前能力。
 >
 > 本报告 §2.2 把 "openclaw 缺 flowmax_auth" 列为 P0 回退、§5 行动建议 #2 要求 port `skills/flowmax_auth` → `openclaw/skills/`。**这两项结论已被推翻，不再执行**。
 >

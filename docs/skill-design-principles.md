@@ -57,7 +57,7 @@ API key 是用户在 Flowmax Market 网页上登录之后生成的长期凭证�
 - 版本历史 / 详情 / 回滚
 - 数据源 / indicator 模板列表
 
-用户说"查 research agent 的部署 job 状态"时，routing eval 把它分到 `flowmax_runs`（因为 runs 的 description 有 "status"），而正确应该是 `flowmax_agents`。
+用户说"查 research agent 的部署 job 状态"时，routing eval 曾把它分到现已移除的旧执行 skill（因为其 description 有 "status"），而正确应该是 `flowmax_agents`。
 
 ### 原则陈述
 
@@ -73,24 +73,15 @@ API key 是用户在 Flowmax Market 网页上登录之后生成的长期凭证�
 
 ## 原则 3：跨 skill 有语义重叠时，两边 description 都要显式划边界
 
-### 背景
-
-用户 query "我想在 Flowmax 上跑个新的 research agent"：
-
-- 字面看 "跑" (run) → 容易走到 `flowmax_runs`
-- 实际意图 "创建/部署 research agent" → 应该走 `flowmax_agents`
-
-`flowmax_runs` 的 description 是 "run an agent, check a run's status"。从这个描述看，"跑个新的 agent" 完全合理地被判到 runs，router 没错——错的是两边 description 都没划清楚 "run 是什么"。
-
 ### 原则陈述
 
-> **在 Flowmax 业务里，"run" 专指对一个已存在 agent 的 x402 付费执行；"跑 research agent" 在 Flowmax 里等于创建/部署 research agent，不是 run。这种业务术语差异必须在相关每一个 skill 的 description 里正面写清楚。**
+> **description 应说明当前业务语义和操作范围，避免宽泛动词造成路由歧义。**
 
 ### 执行
 
-- `flowmax_runs` description 必须显式说明 "invoking an existing agent via x402 pay-per-execution, NOT creating or deploying an agent"。
-- `flowmax_agents` description 必须显式说明 "creating / deploying research agents"，用 "deploy" 而不仅仅是 "create" 抓住 "跑 research agent" 的意图。
-- Review 任何路由失败时，先看是不是两个 skill 的 description 都在同一片语义模糊地带。
+- “跑个新的 research agent”属于创建/部署，应路由到 `flowmax_agents`；description 保留 create / deploy 和部署状态等关键词。
+- 已移除的付费执行流程不属于当前 skills 的能力，旧 run 状态和列表请求在 routing eval 中应返回 `null`。
+- Review 任何路由失败时，先检查相关 skill 的 description 是否清楚表达各自的操作范围。
 
 ---
 

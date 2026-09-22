@@ -4,7 +4,6 @@
     "flowmax_credits",
     "flowmax_agents",
     "flowmax_pm_agent",
-    "flowmax_runs",
     "flowmax_logs"
   ],
   "cases": [
@@ -37,10 +36,10 @@
     {"id": "pm_pos_5", "prompt": "重新对一下仓位（reconcile）", "expected": "flowmax_pm_agent", "category": "positive"},
     {"id": "pm_pos_6", "prompt": "stop the PM agent scheduler", "expected": "flowmax_pm_agent", "category": "positive"},
 
-    {"id": "runs_pos_1", "prompt": "跑一下这个 agent", "expected": "flowmax_runs", "category": "positive"},
-    {"id": "runs_pos_2", "prompt": "查一下这个 run 的状态", "expected": "flowmax_runs", "category": "positive"},
-    {"id": "runs_pos_3", "prompt": "列出这个 agent 最近的 runs", "expected": "flowmax_runs", "category": "positive"},
-    {"id": "runs_pos_4", "prompt": "poll the run progress", "expected": "flowmax_runs", "category": "positive"},
+    {"id": "runs_neg_1", "prompt": "跑一下这个 agent", "expected": null, "category": "negative"},
+    {"id": "runs_neg_2", "prompt": "查一下这个 run 的状态", "expected": null, "category": "negative"},
+    {"id": "runs_neg_3", "prompt": "列出这个 agent 最近的 runs", "expected": null, "category": "negative"},
+    {"id": "runs_neg_4", "prompt": "poll the run progress", "expected": null, "category": "negative"},
 
     {"id": "logs_pos_1", "prompt": "看看最近的 PM 决策日志", "expected": "flowmax_logs", "category": "positive"},
     {"id": "logs_pos_2", "prompt": "拉 BTCUSDT 最近一天的 PnL summary", "expected": "flowmax_logs", "category": "positive"},
@@ -51,7 +50,7 @@
 
     {"id": "amb_1", "prompt": "PM agent 现在有几个持仓？", "expected_primary": "flowmax_logs", "expected_secondary": "flowmax_pm_agent", "category": "ambiguous", "note": "status 接口可能返回仓位数；但 positions 精确查询走 logs"},
     {"id": "amb_2", "prompt": "给 PM agent 发一个 trigger 决策，然后看看 decision log", "expected_primary": "flowmax_pm_agent", "expected_secondary": "flowmax_logs", "category": "ambiguous", "note": "两个 skill 都该触发"},
-    {"id": "amb_3", "prompt": "我想在 flowmax 上跑个新的 research agent", "expected": "flowmax_agents", "category": "ambiguous", "note": "'跑' 容易误触发 flowmax_runs；正确应走 flowmax_agents（创建）"},
+    {"id": "amb_3", "prompt": "我想在 flowmax 上跑个新的 research agent", "expected": "flowmax_agents", "category": "ambiguous", "note": "'跑新的 research agent' 应走 flowmax_agents（创建/部署）"},
     {"id": "amb_4", "prompt": "我的账户里还有多少钱？", "expected": "flowmax_credits", "category": "ambiguous", "note": "'钱' 容易被当作 PnL 或资产；在 Flowmax 上下文下应指 credits 余额"},
 
     {"id": "neg_1", "prompt": "给我写一首关于 BTC 的诗", "expected": "none", "category": "negative"},

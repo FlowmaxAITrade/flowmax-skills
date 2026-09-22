@@ -5,7 +5,7 @@ description: Use when the user asks about the Flowmax callout square (喊单广�
 
 # Flowmax Callout Skill
 
-Version: v1.0.0
+Version: v1.0.1
 
 ## When to use
 
