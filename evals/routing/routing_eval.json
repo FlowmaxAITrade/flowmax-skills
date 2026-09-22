@@ -2,6 +2,9 @@
   "description": "Cross-skill routing eval for flowmax-skills. For each prompt, determine which skill (if any) should be invoked. This tests description quality when multiple skills compete.",
   "variants": ["flowmax"],
   "cases": [
+    {"id": "agents_llm_1", "prompt": "Flowmax 当前环境支持哪些 LLM 供应商和模型？", "expected": "flowmax_agents", "category": "positive"},
+    {"id": "agents_llm_2", "prompt": "创建 Flowmax research agent 前，先查询 staging 可用的模型让我选", "expected": "flowmax_agents", "category": "positive"},
+    {"id": "agents_llm_3", "prompt": "把 Flowmax PM agent 的 LLM 换成当前环境支持的 DeepSeek 模型", "expected": "flowmax_agents", "category": "positive"},
     {"id": "auth_neg_1", "prompt": "帮我登录 Flowmax", "expected": null, "category": "negative", "note": "原则 1：skill 只做 post-auth 调用，用户登录流程不归任何 skill 管，正确行为是提示用户去网页登录后拿 hb_sk_ key"},
     {"id": "auth_neg_2", "prompt": "给我的邮箱发一个验证码用来登录 Flowmax", "expected": null, "category": "negative", "note": "原则 1：skill 不应触发邮箱 OTP 登录流程"},
     {"id": "auth_neg_3", "prompt": "用邮箱验证码登录 Flowmax，我的邮箱是 alex@hubble.xyz", "expected": null, "category": "negative", "note": "原则 1"},

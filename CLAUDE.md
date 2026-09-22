@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 仓库概述
 
-`flowmax-skills` 是一个 AI assistant skill 包，为 Claude Code 提供操作 Flowmax Market API 的能力。当前版本：`v1.0.1`（见 `VERSION`）。
+`flowmax-skills` 是一个 AI assistant skill 包，为 Claude Code 提供操作 Flowmax Market API 的能力。当前版本：`v1.1.0`（见 `VERSION`）。
 
 每个 skill 对应一类业务操作，通过 `FLOWMAX_API_KEY`（前缀 `hb_sk_`）鉴权，直接调 REST API。网关为 Market Server，默认 dev 域名 `https://market.dev.gcp.hubble-rpc.xyz`。
 
@@ -24,7 +24,7 @@ docs/               # 设计文档和原则
 
 | skill | 核心能力 |
 |---|---|
-| `flowmax_agents` | PM agent / User Research agent CRUD、部署、版本管理 |
+| `flowmax_agents` | PM agent / User Research agent CRUD、部署、版本管理、动态 LLM 供应商/模型查询 |
 | `flowmax_credits` | 积分余额查询、充值、流水记录 |
 | `flowmax_logs` | PM agent 决策日志、订单、仓位、PnL、账户权益 |
 | `flowmax_pm_agent` | PM agent 状态与调度管理 |

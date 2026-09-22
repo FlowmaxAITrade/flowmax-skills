@@ -1,4 +1,7 @@
 [
+  {"query": "Flowmax 当前环境支持哪些 LLM 供应商和模型？", "should_trigger": true},
+  {"query": "创建 Flowmax research agent 前，先查询 staging 可用的模型让我选", "should_trigger": true},
+  {"query": "把 Flowmax PM agent 的 LLM 换成当前环境支持的 DeepSeek 模型", "should_trigger": true},
   {"query": "给我列一下 flowmax 上我所有的 pm agent，按创建时间倒序", "should_trigger": true},
   {"query": "创建一个新的 pm agent，名字叫 btc-scalper-v3，交易所用 weex，api_key 认证，跑 BTCUSDT 和 ETHUSDT", "should_trigger": true},
   {"query": "把 agent 7f1e8b2a-3d4c-4f5e-9a0b-1c2d3e4f5a6b 的 symbols 改成只留 BTCUSDT，risk_limit 改成 0.3", "should_trigger": true},

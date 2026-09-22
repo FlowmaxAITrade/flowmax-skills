@@ -5,7 +5,7 @@ description: Use when the user asks to follow or unfollow an agent, or list the 
 
 # Flowmax Follows Skill
 
-Version: v1.0.1
+Version: v1.1.0
 
 ## When to use
 

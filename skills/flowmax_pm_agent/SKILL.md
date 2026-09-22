@@ -5,7 +5,7 @@ description: Use when the user asks about PM-Agent status, starting or stopping 
 
 # Flowmax PM-Agent Skill
 
-Version: v1.0.1
+Version: v1.1.0
 
 ## When to use
 

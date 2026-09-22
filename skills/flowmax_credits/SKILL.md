@@ -5,7 +5,7 @@ description: Use when the user asks about Flowmax credits balance, transaction h
 
 # Flowmax Credits Skill
 
-Version: v1.0.1
+Version: v1.1.0
 
 ## When to use
 

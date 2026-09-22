@@ -1,16 +1,17 @@
 ---
 name: flowmax_agents
-description: Use when the user asks to list, view, create, update, delete, or deploy agents on Flowmax — including PM agents (CRUD, fork/switch), and User Research agents (create/update/delete, run a new research agent, deploy job status, version history, rollback, data sources, indicator templates). NOTE "run / 跑 a research agent" in Flowmax means creating or deploying one here.
+description: Use when the user asks to query available Flowmax LLM providers/models (供应商/模型列表), select a model, or list, view, create, update, delete, or deploy agents on Flowmax — including PM agents (CRUD, fork/switch), and User Research agents (create/update/delete, run a new research agent, deploy job status, version history, rollback, data sources, indicator templates). NOTE "run / 跑 a research agent" in Flowmax means creating or deploying one here.
 ---
 
 # Flowmax Agents Skill
 
-Version: v1.0.1
+Version: v1.1.0
 
 ## When to use
 
 Use this skill when the user asks about:
 
+- Querying available Flowmax LLM providers and models in the current environment
 - Listing PM agents
 - Viewing an agent's details
 - Creating a PM agent
@@ -26,7 +27,7 @@ Use this skill when the user asks about:
 Read from environment:
 
 - `FLOWMAX_API_BASE_URL` — default: `https://market.dev.gcp.hubble-rpc.xyz`
-- `FLOWMAX_API_KEY` — must start with `hb_sk_`
+- `FLOWMAX_API_KEY` — not needed for the public LLM provider list; for authenticated agent operations, must start with `hb_sk_`
 
 ## Safety rules
 
@@ -38,9 +39,32 @@ Read from environment:
 
 ```bash
 BASE="${FLOWMAX_API_BASE_URL%/}"
+```
+
+Only for routes requiring an `agent_id` (skip for list/config/create routes):
+
+```bash
 # Validate agent_id
 [[ ! "$AGENT_ID" =~ ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$ ]] && echo "Invalid agent_id" && exit 2
 ```
+
+---
+
+## 查询 LLM 供应商与模型（PM / User Research 共用）
+
+```bash
+curl -sS --fail-with-body \
+  "$BASE/api/v1/config/llm-providers"
+```
+
+无需 API key 或 agent_id。返回当前环境启用的配置列表（JSON 数组）；不要使用固定名单，也不要跨 `FLOWMAX_API_BASE_URL` 复用结果。
+
+- 展示 `id`、`vendor`、`model`；若有 `display_name`，用作展示名，否则使用 `id`。`max_tokens`、`rpm_limit` 可按需展示。
+- 创建 PM / User Research Agent，或更新、部署新版本时指定 LLM 前，先查询当前环境的列表。用户已提供供应商/模型时也要校验；仅修改其他字段无需查询。
+- 将选中记录的 **`id` → `llm_provider_id`、`model` → `llm_model`**，不得用可选的 `provider` 或 `vendor` 代替 `id`，不得拼接不同记录的值。
+- 用户只给供应商或模型名称时，匹配返回记录；存在多个候选时让用户选择，不静默替换用户指定的模型。
+- PM 创建允许不传 LLM 字段以使用服务端默认值；用户未指定时可保留该默认行为。User Research 创建需确定供应商和模型。
+- 查询失败、列表为空或指定组合不在列表中时，说明当前环境的结果，不回退到示例或猜测名单；需指定 LLM 的写操作暂不执行。
 
 ---
 
@@ -202,17 +226,6 @@ API 前缀：`/api/v1/agents/user-research`。
 
 > **已废弃**：`POST /agents/research` 和 `PUT /agents/research/{id}` 已标记为 Deprecated，禁止使用。
 
-### LLM 供应商与模型
-
-| `llm_provider_id` | `llm_model` | 说明 |
-|---|---|---|
-| `gemini_vertex` | `gemini-3-flash-preview` | Google Gemini，适合通用分析场景 |
-| `minimax` | `MiniMax-M2.7` | MiniMax，适合中文内容场景 |
-
-`llm_provider_id` 与 `llm_model` 必须配对使用，不可混用。
-
----
-
 ### Create User Research Agent — requires confirmation
 
 **创建是异步的**：请求成功返回 `202`，同时返回 `agent_id` 和 `job_id`。Agent 并未立刻可用，需轮询 job 状态直到 `completed`/`deployed`（见"查询部署进度"）。
@@ -226,8 +239,8 @@ API 前缀：`/api/v1/agents/user-research`。
 | `asset_type` | ✅ | string | 分析的资产类别 | `"Crypto"` / `"A-shares"` / `"HK stocks"` / `"US stocks"` |
 | `analysis_type` | ✅ | string | 分析类型 | `"Technical Analysis"` / `"Fundamental Research"` / `"Capital Flow Analysis"` / `"Macro Analysis"` |
 | `datasource_ids` | ✅ | string[] | 数据源 ID 列表（12 位 hex）。先调 `GET /api/v1/agents/user-research/data-sources` | `["a1b2c3d4e5f6"]` |
-| `llm_provider_id` | ✅ | string | LLM 供应商，见上方表格 | `"gemini_vertex"` |
-| `llm_model` | ✅ | string | LLM 模型，须与 `llm_provider_id` 配对 | `"gemini-3-flash-preview"` |
+| `llm_provider_id` | ✅ | string | LLM 供应商，使用查询结果的 `id` | `"<selected.id>"` |
+| `llm_model` | ✅ | string | LLM 模型，须与 `llm_provider_id` 配对 | `"<selected.model>"` |
 | `description` | ❌ | string | 简短说明 | `"每小时分析一次 BTC 技术面"` |
 | `is_public` | ❌ | boolean | 是否公开到市场，默认 `false` | `false` |
 | `datasource_config_version` | ❌ | string | 数据源配置版本，留空用最新版 | `"v1"` |
@@ -236,7 +249,7 @@ API 前缀：`/api/v1/agents/user-research`。
 
 根据用户提供的信息量决定行为：
 
-- **用户已提供全部必填字段** → 直接展示请求体摘要，确认后执行。
+- **用户已提供全部必填字段** → 先查询并校验 LLM 组合，再展示请求体摘要，确认后执行。
 - **其他情况** → 先问：
   > "要从模板快速创建，还是手动配置所有参数？"
   - **模板** → 进入模板创建路径（见下方）
@@ -249,7 +262,7 @@ API 前缀：`/api/v1/agents/user-research`。
 3. 分析哪类资产？`Crypto` / `A-shares` / `HK stocks` / `US stocks` / 其他（值需与 Creator 配置一致）
 4. 分析类型是？`Technical Analysis` / `Fundamental Research` / `Capital Flow Analysis` / `Macro Analysis` / 其他
 5. 先调 `GET /api/v1/agents/user-research/data-sources` 列出可用数据源，展示给用户选择
-6. 使用哪个 LLM？`gemini_vertex`（gemini-3-flash-preview）/ `minimax`（MiniMax-M2.7）
+6. 查询当前环境的 LLM 供应商与模型列表，展示候选供用户选择（见上方共用流程）。
 7. 是否公开到市场？（可选，默认 `false`）
 
 收集完毕后，展示完整 JSON body，等用户确认后再执行。
@@ -258,13 +271,15 @@ API 前缀：`/api/v1/agents/user-research`。
 
 1. 调用 `GET /api/v1/config/indicator-templates`，按 `asset_type` 分组展示模板列表，等用户输入序号选择。
 2. 询问：这个 Agent 叫什么名字？
-3. 询问：使用哪个 LLM？`gemini_vertex` / `minimax`
+3. 查询当前环境的 LLM 供应商与模型列表，让用户选择，使用同一记录的 `id` 和 `model`。
 4. 展示模板 prompt 前两行预览，询问："要直接使用模板指令，还是在模板基础上补充说明？"
 5. 展示完整 JSON body，等用户确认后执行创建请求。
 
 从模板提取的字段：`datasource_ids` ← `selected_indicator_ids`，`prompt`、`asset_type`、`analysis_type` 直接使用，无需转换格式。
 
 #### 完整示例请求体
+
+`<selected.id>` 和 `<selected.model>` 是占位符，执行前必须替换为当前环境查询结果中选中记录的值。
 
 ```json
 {
@@ -274,8 +289,8 @@ API 前缀：`/api/v1/agents/user-research`。
   "asset_type": "Crypto",
   "analysis_type": "Technical Analysis",
   "datasource_ids": ["a1b2c3d4e5f6", "0a1b2c3d4e5f"],
-  "llm_provider_id": "gemini_vertex",
-  "llm_model": "gemini-3-flash-preview",
+  "llm_provider_id": "<selected.id>",
+  "llm_model": "<selected.model>",
   "is_public": false
 }
 ```
@@ -446,8 +461,8 @@ curl -sS --fail-with-body \
 |---|---|---|
 | `prompt` | 新的分析指令 | `"重点关注 MACD 金叉死叉信号"` |
 | `data_sources` | 新的数据源配置（旧格式） | `[...]` |
-| `llm_provider_id` | 更换 LLM 供应商 | `"minimax"` |
-| `llm_model` | 更换模型（需与新供应商配对） | `"MiniMax-M2.7"` |
+| `llm_provider_id` | 更换 LLM 供应商 | `"<selected.id>"` |
+| `llm_model` | 更换模型（需与新供应商配对） | `"<selected.model>"` |
 
 ```bash
 curl -sS --fail-with-body \

@@ -1,6 +1,6 @@
 # flowmax-skills
 
-Version: v1.0.1
+Version: v1.1.0
 
 Flowmax 产品操作 skills 包，为 Claude Code 提供操作 Flowmax Market API 的能力。以 Claude Code 插件形式分发（`.claude-plugin/`），skills 位于 `skills/`。
 
@@ -8,7 +8,7 @@ Flowmax 产品操作 skills 包，为 Claude Code 提供操作 Flowmax Market AP
 
 | skill | 核心能力 |
 |---|---|
-| `flowmax_agents` | PM agent / User Research agent CRUD、fork、部署、版本管理 |
+| `flowmax_agents` | PM agent / User Research agent CRUD、fork、部署、版本管理、动态 LLM 供应商/模型查询 |
 | `flowmax_credits` | 积分余额查询、充值、流水记录 |
 | `flowmax_logs` | PM 决策/研究日志、订单、仓位、PnL、账户权益 |
 | `flowmax_pm_agent` | PM agent 状态与调度管理、对账、紧急平仓 |
@@ -58,7 +58,7 @@ export FLOWMAX_API_KEY="hb_sk_xxxxxxxxxxxxxxxxx"
 
 版本号**手动**管理（无构建产物，不需要 release-please）：
 
-1. 把 `plugin.json` 的 `version` 和 `.claude-plugin/marketplace.json` 的 `plugins[].version` **同步**改成新版本（语义化版本，如 `1.0.1`）。
+1. 把 `plugin.json` 的 `version` 和 `.claude-plugin/marketplace.json` 的 `plugins[].version` **同步**改成新版本（语义化版本，如 `1.1.0`）。
 2. 打 tag（会自动校验两处版本一致；tag 格式固定为 `flowmax-skills--v<version>`）：
 
 ```bash
